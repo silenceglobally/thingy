@@ -101,7 +101,7 @@ bool ChallengeListLayer::init() {
     menu->addChild(m_infoButton, 2);
 
     auto refreshBtnSpr = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
-    auto refreshButton = CCMenuItemSpriteExtra::create(refreshBtnSpr, this, menu_selector(ChallengeListLayer::showLoadingWrapper));
+    auto refreshButton = CCMenuItemSpriteExtra::create(refreshBtnSpr, this, menu_selector(ChallengeListLayer::refresh));
     refreshButton->setPosition({ winSize.width - refreshBtnSpr->getContentWidth() / 2 - 4.0f, refreshBtnSpr->getContentHeight() / 2 + 4.0f });
     refreshButton->setID("refresh-button");
     menu->addChild(refreshButton, 2);
@@ -158,6 +158,8 @@ bool ChallengeListLayer::init() {
     showLoading();
     setKeypadEnabled(true);
     setKeyboardEnabled(true);
+
+    GDCP::load(std::move(m_GDCPListener), std::move(m_GDCPOkListener), [this] { populateList(""); }, failure());
 
     return true;
 }
@@ -282,7 +284,7 @@ void ChallengeListLayer::setupPageInfo(gd::string, const char*) {
 void ChallengeListLayer::search() {
     if (m_query != m_searchBarText) {
         showLoading();
-        GDCP::load(std::move(m_aredlListener), std::move(m_aredlOkListener), [this] {
+        GDCP::load(std::move(m_GDCPListener), std::move(m_GDCPOkListener), [this] {
             m_page = 0;
             populateList(m_searchBarText);
         }, failure());
@@ -343,7 +345,8 @@ void ChallengeListLayer::pageRight(CCObject*) {
     ChallengeListLayer::page(m_page + 1);
 }
 
-void ChallengeListLayer::showLoadingWrapper(CCObject*) {
+void ChallengeListLayer::refresh(CCObject*) {
+    GDCP::load(std::move(m_GDCPListener), std::move(m_GDCPOkListener), [this] { populateList(m_query); }, failure());
     ChallengeListLayer::showLoading();
 }
 

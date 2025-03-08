@@ -1,5 +1,8 @@
 #pragma once
 #include <Geode/utils/web.hpp>
+#include <vector>
+#include <string>
+#include <functional>
 
 struct GDCPListDemon {
     int id;
@@ -15,8 +18,8 @@ struct GDCPDemonPack {
 
 class GDCP {
 public:
-    inline static std::vector<GDCPListDemon> PEMONLIST = {};
-    inline static bool PEMONLIST_LOADED = false;
+    inline static std::vector<GDCPListDemon> GDCP_LIST = {};
+    inline static bool GDCP_LOADED = false;
 
     static void load(
         geode::EventListener<geode::utils::web::WebTask>&&,
@@ -24,4 +27,6 @@ public:
         const std::function<void()>&,
         const std::function<void(int)>&
     );
+
+    static void loadDemonDetails(const matjson::Value& levelJson, int position);
 };

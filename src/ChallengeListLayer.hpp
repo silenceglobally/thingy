@@ -18,8 +18,8 @@ public:
 
     ~ChallengeListLayer() override;
 
-    geode::EventListener<geode::utils::web::WebTask> m_aredlListener;
-    geode::EventListener<geode::utils::web::WebTask> m_aredlOkListener;
+    geode::EventListener<geode::utils::web::WebTask> m_GDCPListener;
+    geode::EventListener<geode::utils::web::WebTask> m_GDCPOkListener;
     GJListLayer* m_list;
     cocos2d::CCLabelBMFont* m_listLabel;
     LoadingCircle* m_loadingCircle;
@@ -59,7 +59,7 @@ public:
     void pageLeft(CCObject*);
     void pageRight(CCObject*);
 
-    void showLoadingWrapper(CCObject*);
+    void refresh(CCObject*);
     
     void pageButton(CCObject*);
 
