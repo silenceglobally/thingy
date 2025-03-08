@@ -6,9 +6,14 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"id": "omgrod.gdcp_challenge_list_integration",
+	"id": "omgrod.gdcp-integration",
 	"name": "GDCP Challenge List Integration",
-	"version": "v1.0.0",
+	"version": "v1.0.0-prerelease",
 	"developer": "OmgRod",
-	"description": ""
+	"description": "",
+	"resources": {
+		"sprites": [
+			"res/*.png"
+		]
+	}
 }

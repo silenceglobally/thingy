@@ -1,3 +1,2 @@
-# Template Mod
+# GDCP Challenge List Integration
 
-Edit about.md to change this
