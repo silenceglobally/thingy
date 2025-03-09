@@ -41,17 +41,17 @@ bool ChallengeListLayer::init() {
     bg->setScaleX((winSize.width + 10.0f) / bg->getTextureRect().size.width);
     bg->setScaleY((winSize.height + 10.0f) / bg->getTextureRect().size.height);
     bg->setPosition({ -5.0f, -5.0f });
-    bg->setColor({ 51, 51, 51 });
+    bg->setColor({ 0, 102, 255 });
     bg->setID("background");
     addChild(bg);
 
-    auto bottomLeftCorner = CCSprite::createWithSpriteFrameName("gauntletCorner_001.png");
+    auto bottomLeftCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
     bottomLeftCorner->setPosition({ -1.0f, -1.0f });
     bottomLeftCorner->setAnchorPoint({ 0.0f, 0.0f });
     bottomLeftCorner->setID("left-corner");
     addChild(bottomLeftCorner);
 
-    auto bottomRightCorner = CCSprite::createWithSpriteFrameName("gauntletCorner_001.png");
+    auto bottomRightCorner = CCSprite::createWithSpriteFrameName("GJ_sideArt_001.png");
     bottomRightCorner->setPosition({ winSize.width + 1.0f, -1.0f });
     bottomRightCorner->setAnchorPoint({ 1.0f, 0.0f });
     bottomRightCorner->setFlipX(true);
