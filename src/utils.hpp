@@ -12,12 +12,12 @@ public:
         }
     }
 
-    static Layer* getLayer() {
-        Layer* layer = Cache::getLayer();
+    static GDCPListLayer* getLayer() {
+        GDCPListLayer* layer = Cache::getLayer();
 
         if (!layer) {
             CCScene* scene = CCDirector::sharedDirector()->getRunningScene();
-            layer = scene->getChildByType<Layer>(0);
+            layer = scene->getChildByType<GDCPListLayer>(0);
 
             if (layer) Cache::setLayer(layer);
         }

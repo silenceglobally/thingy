@@ -2,7 +2,7 @@
 
 #include "includes.hpp"
 
-class Layer : public cocos2d::CCLayer, public LevelManagerDelegate {
+class GDCPListLayer : public cocos2d::CCLayer, public LevelManagerDelegate {
 
 private:
 
@@ -29,7 +29,7 @@ private:
 
     std::chrono::steady_clock::time_point m_lastRefresh = std::chrono::steady_clock::now();
 
-    ~Layer();
+    ~GDCPListLayer();
 
     bool init() override;
 
@@ -57,7 +57,7 @@ private:
 
 public:
 
-    static Layer* create();
+    static GDCPListLayer* create();
 
     void loadPage(const std::string& str);
     

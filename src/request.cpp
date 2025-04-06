@@ -22,7 +22,7 @@ void Request::loadLevelNames(bool shouldLoadLevels, int page) {
 
     req.get(fmt::format("{}{}.json", listLink, "_list")).listen([shouldLoadLevels, page] (web::WebResponse* e) {
         auto res = e->json();
-        Layer* layer = Utils::getLayer();
+        GDCPListLayer* layer = Utils::getLayer();
 
         if (res.isErr()) {
             if (layer) layer->showError();
@@ -70,7 +70,7 @@ void Request::loadPageLevels(int page) {
             Cache::addCount();
 
             if (Cache::getCount() >= levelsPerPage)
-                if (Layer* layer = Utils::getLayer())
+                if (GDCPListLayer* layer = Utils::getLayer())
                     layer->loadPage(getLevelsString(page));
 
             continue;
@@ -85,7 +85,7 @@ void Request::loadPageLevels(int page) {
 
         req.get(fmt::format("{}{}.json", listLink, name)).listen([i, page](web::WebResponse* e) {
             auto res = e->json();
-            Layer* layer = Utils::getLayer();
+            GDCPListLayer* layer = Utils::getLayer();
 
             if (res.isErr()) {
                 if (layer) layer->showError();
@@ -179,7 +179,7 @@ void Request::loadEditors(bool shouldUpdateButtons) {
         Cache::setEditors(editors);
 
         if (shouldUpdateButtons)
-            if (Layer* layer = Utils::getLayer())
+            if (GDCPListLayer* layer = Utils::getLayer())
                 layer->updateButtons();
     
     }); 

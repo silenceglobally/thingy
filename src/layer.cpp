@@ -4,12 +4,12 @@
 #include "request.hpp"
 #include "cache.hpp"
 
-Layer::~Layer() {
+GDCPListLayer::~GDCPListLayer() {
     Cache::setLayer(nullptr);
 }
 
-Layer* Layer::create() {
-    Layer* ret = new Layer();
+GDCPListLayer* GDCPListLayer::create() {
+    GDCPListLayer* ret = new GDCPListLayer();
     if (ret->init()) {
         ret->autorelease();
         return ret;
@@ -19,12 +19,12 @@ Layer* Layer::create() {
     return nullptr;
 }
 
-void Layer::keyBackClicked() {
+void GDCPListLayer::keyBackClicked() {
     GameLevelManager::sharedState()->m_levelManagerDelegate = nullptr;
     CCDirector::get()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
-bool Layer::init() {
+bool GDCPListLayer::init() {
 
     Cache::setLayer(this);
 
@@ -32,6 +32,7 @@ bool Layer::init() {
     cocos::handleTouchPriority(this, true);
 
     CCSprite* backgroundSprite = CCSprite::create("GJ_gradientBG.png");
+    backgroundSprite->setID("background");
     
     cocos2d::CCSize winSize = CCDirector::sharedDirector()->getWinSize();
     cocos2d::CCSize size = backgroundSprite->getContentSize();
@@ -51,7 +52,7 @@ bool Layer::init() {
     CCMenuItemSpriteExtra* button = CCMenuItemSpriteExtra::create(
         spr,
         this,
-        menu_selector(Layer::onBack)
+        menu_selector(GDCPListLayer::onBack)
     );
     button->setPosition({25, winSize.height - 25});
 
@@ -83,7 +84,7 @@ bool Layer::init() {
     spr = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
     m_refreshButton = CCMenuItemSpriteExtra::create(spr,
         this,
-        menu_selector(Layer::onRefresh)
+        menu_selector(GDCPListLayer::onRefresh)
     );
     m_refreshButton->setCascadeOpacityEnabled(true);
     m_refreshButton->setPosition({winSize.width - 27, 27});
@@ -96,7 +97,7 @@ bool Layer::init() {
     m_nextButton = CCMenuItemSpriteExtra::create(
         spr,
         this,
-        menu_selector(Layer::onNext)
+        menu_selector(GDCPListLayer::onNext)
     );
     m_nextButton->setCascadeOpacityEnabled(true);
     m_nextButton->setPosition({winSize.width - 24.f, winSize.height / 2.f});
@@ -108,7 +109,7 @@ bool Layer::init() {
     m_prevButton = CCMenuItemSpriteExtra::create(
         spr,
         this,
-        menu_selector(Layer::onPrev)
+        menu_selector(GDCPListLayer::onPrev)
     );
     m_prevButton->setCascadeOpacityEnabled(true);
     m_prevButton->setPosition({24.f, winSize.height / 2.f});
@@ -135,22 +136,22 @@ bool Layer::init() {
 
     showLoading();
     
-    Layer::goToPage(m_currentPage);
+    GDCPListLayer::goToPage(m_currentPage);
 
     updatePageLabel();
 
     return true;
 }
 
-int Layer::getLastPage() {
+int GDCPListLayer::getLastPage() {
     return (Cache::getLevelCount() + levelsPerPage) / levelsPerPage;
 }
 
-void Layer::onBack(CCObject*) {
+void GDCPListLayer::onBack(CCObject*) {
     keyBackClicked();
 }
 
-void Layer::onRefresh(CCObject*) {
+void GDCPListLayer::onRefresh(CCObject*) {
     auto currentTime = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(currentTime - m_lastRefresh).count();
 
@@ -170,14 +171,14 @@ void Layer::onRefresh(CCObject*) {
     updateButtons();
 }
 
-void Layer::goToPage(int page) {
+void GDCPListLayer::goToPage(int page) {
     if (CCArray* cachedPage = Cache::getCachedPage(page))
         showPage(cachedPage);
     else
         Request::loadPage(page);
 }
 
-void Layer::showPage(cocos2d::CCArray* levels) {
+void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
     if (levels->count() == 0)
         return showError();
 
@@ -189,7 +190,7 @@ void Layer::showPage(cocos2d::CCArray* levels) {
     updateButtons();
 }
 
-void Layer::loadPage(const std::string& str) {
+void GDCPListLayer::loadPage(const std::string& str) {
     if (str.empty())
         return showError();
 
@@ -198,16 +199,16 @@ void Layer::loadPage(const std::string& str) {
     glm->getOnlineLevels(GJSearchObject::create(SearchType::Type19, str));
 }
 
-void Layer::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) {
+void GDCPListLayer::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) {
     Cache::setCachedPage(m_currentPage, levels);
     showPage(levels);
 }
 
-void Layer::loadLevelsFailed(char const*, int) {
+void GDCPListLayer::loadLevelsFailed(char const*, int) {
     showError();
 }
 
-void Layer::onNext(CCObject*) {
+void GDCPListLayer::onNext(CCObject*) {
     m_currentPage++;
 
     showLoading();
@@ -218,7 +219,7 @@ void Layer::onNext(CCObject*) {
     updatePageLabel();
 }
 
-void Layer::onPrev(CCObject*) {
+void GDCPListLayer::onPrev(CCObject*) {
     m_currentPage--;
 
     if (m_currentPage < 0) m_currentPage = 0;
@@ -231,7 +232,7 @@ void Layer::onPrev(CCObject*) {
     updatePageLabel();
 }
 
-void Layer::updatePageLabel() {
+void GDCPListLayer::updatePageLabel() {
     int pageMax = m_currentPage * levelsPerPage + levelsPerPage;
     m_pageLabel->setString(fmt::format(
         "{} to {} of {}",
@@ -241,7 +242,7 @@ void Layer::updatePageLabel() {
     ).c_str());
 }
 
-void Layer::updateButtons() {
+void GDCPListLayer::updateButtons() {
     bool enableArrows = !m_isLoading;
 
     m_nextButton->setEnabled(enableArrows && m_currentPage != getLastPage() - 1);
@@ -260,7 +261,7 @@ void Layer::updateButtons() {
     m_infoButton->setOpacity(!editors.empty() ? 255 : 125);
 }
 
-void Layer::showError() {
+void GDCPListLayer::showError() {
     m_errorMessage->setVisible(true);
     m_isError = true;
 
@@ -268,14 +269,14 @@ void Layer::showError() {
     updateButtons();
 }
 
-void Layer::hideError() {
+void GDCPListLayer::hideError() {
     m_errorMessage->setVisible(false);
     m_isError = false;
 
     updateButtons();
 }
 
-void Layer::showLoading() {
+void GDCPListLayer::showLoading() {
     if (m_customListView) {
         m_customListView->removeFromParentAndCleanup(true);
         m_customListView = nullptr;
@@ -288,7 +289,7 @@ void Layer::showLoading() {
     updateButtons();
 }
 
-void Layer::hideLoading() {
+void GDCPListLayer::hideLoading() {
     m_loadingCircle->setVisible(false);
     m_isLoading = false;
 

@@ -8,7 +8,7 @@ class Cache {
 
 private:
 
-    Layer* m_layer = nullptr;
+GDCPListLayer* m_layer = nullptr;
 
     std::vector<std::string> m_levelNames;
     std::unordered_map<int, int> m_levelIds;
@@ -65,11 +65,11 @@ public:
         get().m_tempCount = count;
     }
 
-    static void setLayer(Layer* layer) {
+    static void setLayer(GDCPListLayer* layer) {
         get().m_layer = layer;
     }
 
-    static Layer* getLayer() {
+    static GDCPListLayer* getLayer() {
         return get().m_layer;
     }
 

@@ -40,7 +40,7 @@ class $modify(MyLevelSearchLayer, LevelSearchLayer) {
 	}
 
 	void onMyButton(CCObject*) {
-		auto layer = Layer::create();
+		auto layer = GDCPListLayer::create();
 		auto scene = CCScene::create();
 		scene->addChild(layer);
 
