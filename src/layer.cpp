@@ -21,7 +21,7 @@ Layer* Layer::create() {
 
 void Layer::keyBackClicked() {
     GameLevelManager::sharedState()->m_levelManagerDelegate = nullptr;
-    CCDirector::get()->popScene();
+    CCDirector::get()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
 bool Layer::init() {

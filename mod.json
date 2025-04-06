@@ -9,6 +9,16 @@
 	"id": "gdcpteam.challenge-list",
 	"name": "GDCP List Integration",
 	"version": "v1.0.0",
-	"developer": "GDCP Team",
-	"description": "Challenge list for GD Challenge Progression"
+	"developers": ["GDCP Team", "OmgRod", "Zilko"],
+	"description": "Challenge list for GD Challenge Progression",
+	"links": {
+		"community": "https://discord.gg/knK2SvbSvq",
+		"homepage": "https://geometry-dash-challenge-progression.pages.dev/#/",
+		"source": "https://github.com/OmgRod/GDCP-Challenge-List-Integration"
+	},
+	"resources": {
+		"sprites": [
+			"res/*.png"
+		]
+	}
 }

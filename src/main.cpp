@@ -1,4 +1,5 @@
-#include <Geode/modify/MenuLayer.hpp>
+#include <Geode/Geode.hpp>
+#include <Geode/modify/LevelSearchLayer.hpp>
 
 #include "includes.hpp" 
 
@@ -10,22 +11,28 @@ $on_mod(Loaded) {
 	Request::loadLevelNames();
 }
 
-class $modify(MyMenuLayer, MenuLayer) {
-	bool init() {
-		if (!MenuLayer::init()) {
+class $modify(MyLevelSearchLayer, LevelSearchLayer) {
+	bool init(int p0) {
+		if (!LevelSearchLayer::init(p0)) {
 			return false;
 		}
 
-		auto myButton = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			menu_selector(MyMenuLayer::onMyButton)
+		auto challengeSprite = CircleButtonSprite::create(
+			CCSprite::create("listDemon.png"_spr),
+			CircleBaseColor::Green,
+			CircleBaseSize::SmallAlt
 		);
 
-		auto menu = this->getChildByID("bottom-menu");
-		menu->addChild(myButton);
+		auto challengeButton = CCMenuItemSpriteExtra::create(
+			challengeSprite,
+			this,
+			menu_selector(MyLevelSearchLayer::onMyButton)
+		);
 
-		myButton->setID("my-button"_spr);
+		auto menu = this->getChildByID("other-filter-menu");
+		menu->addChild(challengeButton);
+
+		challengeButton->setID("gdcp-button"_spr);
 
 		menu->updateLayout();
 
@@ -37,7 +44,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 		auto scene = CCScene::create();
 		scene->addChild(layer);
 
-		auto transition = CCTransitionFade::create(0.f, scene);
+		auto transition = CCTransitionFade::create(0.5f, scene);
 		
 		CCDirector::sharedDirector()->pushScene(transition);
 	}
