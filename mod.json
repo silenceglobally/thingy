@@ -1,19 +1,14 @@
 {
-	"geode": "4.2.0",
+	"geode": "4.3.1",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"id": "omgrod.gdcp-integration",
-	"name": "GDCP Challenge List Integration",
-	"version": "v1.0.0-prerelease",
-	"developer": "OmgRod",
-	"description": "",
-	"resources": {
-		"sprites": [
-			"res/*.png"
-		]
-	}
+	"id": "gdcpteam.challenge-list",
+	"name": "GDCP List Integration",
+	"version": "v1.0.0",
+	"developer": "GDCP Team",
+	"description": "Challenge list for GD Challenge Progression"
 }

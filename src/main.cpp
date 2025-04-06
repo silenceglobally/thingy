@@ -1,46 +1,44 @@
-#include <Geode/Geode.hpp>
-#include <Geode/modify/LevelSearchLayer.hpp>
-#include <Geode/ui/BasedButtonSprite.hpp>
-#include "ChallengeListLayer.hpp"
+#include <Geode/modify/MenuLayer.hpp>
 
-using namespace geode::prelude;
+#include "includes.hpp" 
 
-class $modify(MyLevelSearchLayer, LevelSearchLayer) {
-	bool init(int p0) {
-		if (!LevelSearchLayer::init(p0)) {
+#include "layer.hpp"
+#include "request.hpp"
+
+$on_mod(Loaded) {
+	Request::loadEditors();
+	Request::loadLevelNames();
+}
+
+class $modify(MyMenuLayer, MenuLayer) {
+	bool init() {
+		if (!MenuLayer::init()) {
 			return false;
 		}
 
-		log::debug("Hello from my LevelSearchLayer::init hook! This layer has {} children.", this->getChildrenCount());
-
-		auto challengeSprite = CircleButtonSprite::create(
-			CCSprite::create("list-demon.png"_spr),
-			CircleBaseColor::Green,
-			CircleBaseSize::SmallAlt
-		);
-
-		auto challengeBtn = CCMenuItemSpriteExtra::create(
-			challengeSprite,
+		auto myButton = CCMenuItemSpriteExtra::create(
+			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
 			this,
-			menu_selector(MyLevelSearchLayer::onChallengeList)
+			menu_selector(MyMenuLayer::onMyButton)
 		);
 
-		auto menu = this->getChildByID("other-filter-menu");
-		if (!menu) {
-			log::error("Failed to retrieve 'other-filter-menu'. Button not added.");
-			return true;
-		}
-		menu->addChild(challengeBtn);
+		auto menu = this->getChildByID("bottom-menu");
+		menu->addChild(myButton);
 
-		challengeBtn->setID("challenge-button"_spr);
+		myButton->setID("my-button"_spr);
 
 		menu->updateLayout();
 
 		return true;
 	}
 
-	void onChallengeList(CCObject*) {
-		auto scenePrev = CCTransitionFade::create(0.5f, ChallengeListLayer::scene());
-        CCDirector::sharedDirector()->pushScene(scenePrev);
+	void onMyButton(CCObject*) {
+		auto layer = Layer::create();
+		auto scene = CCScene::create();
+		scene->addChild(layer);
+
+		auto transition = CCTransitionFade::create(0.f, scene);
+		
+		CCDirector::sharedDirector()->pushScene(transition);
 	}
 };
