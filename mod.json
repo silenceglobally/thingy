@@ -25,6 +25,10 @@
 		"geode.node-ids": {
 			"version": ">=1.20.1",
 			"importance": "required"
-		}
+		},
+		"jouca.badgesapi": {
+            "version": ">=v1.2.2",
+            "importance": "required"
+        }
 	}
 }

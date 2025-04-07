@@ -1,10 +1,10 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/LevelSearchLayer.hpp>
 
-#include "includes.hpp" 
+#include "Includes.hpp" 
 
-#include "layer.hpp"
-#include "request.hpp"
+#include "GDCPListLayer.hpp"
+#include "Request.hpp"
 
 $on_mod(Loaded) {
 	Request::loadEditors();

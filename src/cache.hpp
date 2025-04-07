@@ -2,7 +2,7 @@
 
 #include <Geode/Geode.hpp>
 
-#include "layer.hpp"
+#include "GDCPListLayer.hpp"
 
 class Cache {
 
@@ -23,6 +23,8 @@ GDCPListLayer* m_layer = nullptr;
         return instance;    
     }
 
+    std::vector<EditorEntry> m_editorsList;
+
 public:
 
     static void clearAllCache() {
@@ -31,6 +33,7 @@ public:
         c.m_levelIds.clear();
         c.m_cachedPages.clear();
         c.m_editors.clear();
+        c.m_editorsList.clear(); // added
     }
 
     static const std::vector<std::string>& getLevelNames() {
@@ -89,4 +92,11 @@ public:
         return get().m_cachedPages.contains(page) ? get().m_cachedPages.at(page) : nullptr;
     }
 
+    static void setEditorsList(const std::vector<EditorEntry>& list) {
+        get().m_editorsList = list;
+    }
+    
+    static const std::vector<EditorEntry>& getEditorsList() {
+        return get().m_editorsList;
+    }    
 };

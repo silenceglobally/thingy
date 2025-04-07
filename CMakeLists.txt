@@ -10,11 +10,8 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 project(Chalenge VERSION 1.0.0)
 
-add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
-    src/layer.cpp
-    src/request.cpp
-)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS src/*.cpp src/*.h)
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 if (NOT DEFINED ENV{GEODE_SDK})
     message(FATAL_ERROR "Unable to find Geode SDK! Please define GEODE_SDK environment variable to point to Geode")

@@ -1,8 +1,8 @@
-#include "includes.hpp"
+#include "Includes.hpp"
 
-#include "layer.hpp"
-#include "request.hpp"
-#include "cache.hpp"
+#include "GDCPListLayer.hpp"
+#include "Request.hpp"
+#include "Cache.hpp"
 
 GDCPListLayer::~GDCPListLayer() {
     Cache::setLayer(nullptr);

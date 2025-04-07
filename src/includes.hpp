@@ -31,3 +31,9 @@ const std::unordered_map<Role, std::string> roleColors = {
 };
 
 // lamo
+
+struct EditorEntry {
+    std::string name;
+    Role role;
+    int accountID;
+};

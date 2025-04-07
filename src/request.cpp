@@ -1,8 +1,8 @@
 #include <Geode/utils/web.hpp>
 
-#include "cache.hpp"
-#include "request.hpp"
-#include "utils.hpp"
+#include "Cache.hpp"
+#include "Request.hpp"
+#include "Utils.hpp"
 
 void Request::loadPage(int page) {
     if (Cache::getLevelNames().empty())
@@ -135,52 +135,53 @@ void Request::loadEditors(bool shouldUpdateButtons) {
     if (!Cache::getEditors().empty()) return;
     
     auto req = web::WebRequest();
-
     req.header("Content-Type", "application/json");
 
-    req.get(fmt::format("{}{}.json", listLink, "_editors")).listen([shouldUpdateButtons] (web::WebResponse* e) {
+    req.get(fmt::format("{}{}.json", listLink, "_editors")).listen([shouldUpdateButtons](web::WebResponse* e) {
         auto res = e->json();
 
         if (res.isErr())
             return log::info("1. Failed to load editors: {}", res.unwrapErr());
-        
+
         auto arr = res.unwrap().asArray();
 
         if (arr.isErr())
             return log::info("2. Failed to load editors: {}", arr.unwrapErr());
 
         std::unordered_map<Role, std::vector<std::string>> names;
+        std::vector<EditorEntry> editorEntries;
 
         for (const matjson::Value& value : arr.unwrap()) {
-            std::string role = value["role"].asString().unwrapOr("");
+            std::string roleStr = value["role"].asString().unwrapOr("");
             std::string name = value["name"].asString().unwrapOr("");
+            int accountID = value["accountID"].asInt().unwrap();
 
-            if (role.empty() || name.empty()) continue;
+            if (roleStr.empty() || name.empty()) continue;
 
-            if (roleMap.contains(role))
-                names[roleMap.at(role)].push_back(name);
-            else
-                names[Role::Other].push_back(name);
+            Role role = Role::Other;
+            if (roleMap.contains(roleStr))
+                role = roleMap.at(roleStr);
+
+            names[role].push_back(name);
+            editorEntries.push_back({ name, role, accountID });
         }
 
         std::string editors;
 
-        for (const auto& [role, names] : names) {
+        for (const auto& [role, roleNames] : names) {
             editors += fmt::format("<c{}>", roleColors.at(role));
-
-            for (const auto& name : names) {
+            for (const auto& name : roleNames) {
                 editors += name;
-                if (name != names.back()) editors += "\n";
+                if (name != roleNames.back()) editors += "\n";
             }
-
             editors += "</c>\n";
         }
 
         Cache::setEditors(editors);
+        Cache::setEditorsList(editorEntries);
 
         if (shouldUpdateButtons)
             if (GDCPListLayer* layer = Utils::getLayer())
                 layer->updateButtons();
-    
-    }); 
+    });
 }
