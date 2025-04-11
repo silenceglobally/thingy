@@ -1,4 +1,4 @@
-# v1.0.3
+# v1.1.0
 
 - Added "Go To Page" button
 - Added "Last Page" button
