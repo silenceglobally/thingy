@@ -1,3 +1,5 @@
+#include "Geode/cocos/cocoa/CCString.h"
+#include "Geode/ui/BasedButtonSprite.hpp"
 #include "Includes.hpp"
 
 #include "GDCPListLayer.hpp"
@@ -46,6 +48,7 @@ bool GDCPListLayer::init() {
 
     CCMenu* menu = CCMenu::create();
     menu->setPosition({0, 0});
+    menu->setAnchorPoint({ 0.f, 0.f });
     addChild(menu);
 
     CCSprite* spr = CCSprite::createWithSpriteFrameName("GJ_arrow_01_001.png");
@@ -138,6 +141,33 @@ bool GDCPListLayer::init() {
     
     GDCPListLayer::goToPage(m_currentPage);
 
+    CCLabelBMFont* m_pageCounter = CCLabelBMFont::create("1", "bigFont.fnt");
+
+    m_goToPageButton = CCMenuItemSpriteExtra::create(
+        EditorButtonSprite::create(m_pageCounter, EditorBaseColor::Cyan, EditorBaseSize::Normal),
+        this,
+        menu_selector(GDCPListLayer::onGoToPage)
+    );
+    m_goToPageButton->setID("go-to-page-button");
+    
+    float labelBottom = m_pageLabel->getPositionY() - m_pageLabel->getContentSize().height;
+    float nextTop = m_nextButton->getPositionY() + m_nextButton->getContentSize().height;
+    
+    if (nextTop < labelBottom) std::swap(labelBottom, nextTop);
+    
+    float menuHeight = nextTop - labelBottom;
+    CCPoint menuPosition = { winSize.width - m_goToPageButton->getContentSize().width * 1.25f, labelBottom };
+    
+    auto rightMenu = CCMenu::create();
+    rightMenu->setContentSize({ m_goToPageButton->getContentSize().width, menuHeight });
+    rightMenu->setPosition(menuPosition);
+    rightMenu->setLayout(SimpleAxisLayout::create(Axis::Column)->setGap(2.f));
+    rightMenu->setAnchorPoint({ 0.f, 0.f });
+    
+    rightMenu->addChild(m_goToPageButton);
+    this->addChild(rightMenu);    
+
+    rightMenu->updateLayout();
     updatePageLabel();
 
     return true;
@@ -294,4 +324,32 @@ void GDCPListLayer::hideLoading() {
     m_isLoading = false;
 
     updateButtons();
+}
+
+void GDCPListLayer::onGoToPage(CCObject* sender) {
+    auto popup = SetIDPopup::create(m_currentPage + 1, 1, getLastPage(), "Go to Page", "Search", true, 0, 0.f, true, true);
+    popup->show();
+
+    popup->m_delegate = this;
+}
+
+void GDCPListLayer::setIDPopupClosed(SetIDPopup* popup, int id) {
+    if (id < 0 || id > getLastPage()) return;
+    
+    showLoading();
+    m_currentPage = id - 1;
+    goToPage(m_currentPage);
+    updateButtons();
+    updatePageLabel();
+    
+    // Make sure m_goToPageButton is valid
+    if (m_goToPageButton) {
+        if (auto label = m_goToPageButton->getChildByType<EditorButtonSprite*>(0)->getChildByType<CCLabelBMFont*>(0)) {
+            label->setString(std::to_string(id).c_str());
+        } else {
+            log::warn("No label of type CCLabelBMFont found in m_goToPageButton.");
+        }
+    } else {
+        log::warn("m_goToPageButton is null!");
+    }
 }

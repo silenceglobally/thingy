@@ -2,7 +2,7 @@
 
 #include "Includes.hpp"
 
-class GDCPListLayer : public cocos2d::CCLayer, public LevelManagerDelegate {
+class GDCPListLayer : public cocos2d::CCLayer, public LevelManagerDelegate, public SetIDPopupDelegate {
 
 private:
 
@@ -21,11 +21,15 @@ private:
 
     InfoAlertButton* m_infoButton = nullptr;
 
+    CCMenuItemSpriteExtra* m_goToPageButton = nullptr;
+
     int m_currentPage = 0;
     
     bool m_isLoading = true;
     bool m_isError = false;
     bool m_didRefresh = false;
+
+    CCLabelBMFont* m_pageCounter = nullptr;
 
     std::chrono::steady_clock::time_point m_lastRefresh = std::chrono::steady_clock::now();
 
@@ -54,6 +58,10 @@ private:
 
     virtual void loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) override;
     virtual void loadLevelsFailed(char const*, int) override;
+
+    void onGoToPage(CCObject*);
+
+    virtual void GDCPListLayer::setIDPopupClosed(SetIDPopup* popup, int id);
 
 public:
 
