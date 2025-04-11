@@ -22,3 +22,10 @@ GDCPListLayer* Utils::getLayer() {
 
     return layer;
 }
+
+int Utils::getTopForLevelId(int id) {
+    for (const auto& pair : Cache::getLevelIds())
+        if (pair.second == id) return pair.first + 1;
+
+    return 0;
+}

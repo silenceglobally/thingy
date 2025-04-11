@@ -27,7 +27,7 @@ void Request::loadLevelNames(bool shouldLoadLevels, int page) {
         if (res.isErr()) {
             if (layer) layer->showError();
             
-            return log::info("1. Failed to load level names: {}", res.unwrapErr());
+            return log::error("1. Failed to load level names: {}", res.unwrapErr());
         }
 
         auto json = res.unwrap().asArray();
@@ -35,7 +35,7 @@ void Request::loadLevelNames(bool shouldLoadLevels, int page) {
         if (json.isErr()) {
             if (layer) layer->showError();
             
-            return log::info("2. Failed to load level names: {}", json.unwrapErr());
+            return log::error("2. Failed to load level names: {}", json.unwrapErr());
         }
 
         std::vector<std::string> names;
@@ -90,7 +90,7 @@ void Request::loadPageLevels(int page) {
             if (res.isErr()) {
                 if (layer) layer->showError();
 
-                return log::info("1. Failed to load page levels: {}", res.unwrapErr());
+                return log::error("1. Failed to load page levels: {}", res.unwrapErr());
             }
 
             auto json = res.unwrap();
@@ -100,7 +100,7 @@ void Request::loadPageLevels(int page) {
             if (id == 0) {
                 if (layer) layer->showError();
 
-                return log::info("2. Failed to load page levels: {}", res.unwrapErr());
+                return log::error("2. Failed to load page levels: {}", res.unwrapErr());
             }
 
             Cache::addCount();
@@ -121,7 +121,7 @@ std::string Request::getLevelsString(int page) {
         int id = Cache::getLevelId(i);
 
         if (id == 0) {
-            log::info("3. Failed to load page levels: Failed to find level");
+            log::error("3. Failed to load page levels: Failed to find level");
             return "";
         }
         
@@ -141,12 +141,12 @@ void Request::loadEditors(bool shouldUpdateButtons) {
         auto res = e->json();
 
         if (res.isErr())
-            return log::info("1. Failed to load editors: {}", res.unwrapErr());
+            return log::error("1. Failed to load editors: {}", res.unwrapErr());
 
         auto arr = res.unwrap().asArray();
 
         if (arr.isErr())
-            return log::info("2. Failed to load editors: {}", arr.unwrapErr());
+            return log::error("2. Failed to load editors: {}", arr.unwrapErr());
 
         std::unordered_map<Role, std::vector<std::string>> names;
         std::vector<EditorEntry> editorEntries;

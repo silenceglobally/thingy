@@ -11,19 +11,19 @@ private:
 GDCPListLayer* m_layer = nullptr;
 
     std::vector<std::string> m_levelNames;
+    std::vector<EditorEntry> m_editorsList;
+    
     std::unordered_map<int, int> m_levelIds;
-
-    std::string m_editors;
     std::unordered_map<int, CCArray*> m_cachedPages;
-
+    
+    std::string m_editors;
+    
     int m_tempCount = 0;
 
     static Cache& get() {
         static Cache instance;
         return instance;    
     }
-
-    std::vector<EditorEntry> m_editorsList;
 
 public:
 
@@ -33,7 +33,7 @@ public:
         c.m_levelIds.clear();
         c.m_cachedPages.clear();
         c.m_editors.clear();
-        c.m_editorsList.clear(); // added
+        c.m_editorsList.clear();
     }
 
     static const std::vector<std::string>& getLevelNames() {
@@ -46,6 +46,10 @@ public:
 
     static void setLevelNames(const std::vector<std::string>& names) {
         get().m_levelNames = names;
+    }
+
+    static std::unordered_map<int, int> getLevelIds() {
+        return get().m_levelIds;
     }
 
     static int getLevelId(int index) {

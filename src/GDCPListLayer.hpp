@@ -12,6 +12,7 @@ private:
 
     CCLabelBMFont* m_errorMessage = nullptr;
     CCLabelBMFont* m_pageLabel = nullptr;
+    CCLabelBMFont* m_pageButtonLabel = nullptr;
 
     LoadingCircle* m_loadingCircle = nullptr;
 
@@ -20,8 +21,6 @@ private:
     CCMenuItemSpriteExtra* m_refreshButton = nullptr;
 
     InfoAlertButton* m_infoButton = nullptr;
-
-    CCMenuItemSpriteExtra* m_goToPageButton = nullptr;
 
     int m_currentPage = 0;
     
@@ -52,20 +51,16 @@ private:
     void showLoading();
     void hideLoading();
 
-    void updatePageLabel();
+    void updatePageLabels();
 
     int getLastPage();
 
     virtual void loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) override;
     virtual void loadLevelsFailed(char const*, int) override;
+    virtual void setIDPopupClosed(SetIDPopup* popup, int id) override;
 
     void onGoToPage(CCObject*);
-
-    virtual void setIDPopupClosed(SetIDPopup* popup, int id);
-
-    void onLastPage(CCObject* sender);
-
-    void updateGoToPage();
+    void onLastPage(CCObject*);
 
 public:
 
