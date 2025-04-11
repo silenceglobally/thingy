@@ -61,7 +61,7 @@ private:
 
     void onGoToPage(CCObject*);
 
-    virtual void GDCPListLayer::setIDPopupClosed(SetIDPopup* popup, int id);
+    virtual void setIDPopupClosed(SetIDPopup* popup, int id);
 
     void onLastPage(CCObject* sender);
 
