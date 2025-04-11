@@ -166,7 +166,7 @@ bool GDCPListLayer::init() {
     
     auto rightMenu = CCMenu::create();
     rightMenu->setContentSize({ m_goToPageButton->getContentSize().width, menuHeight });
-    rightMenu->setPosition(winSize.width - m_goToPageButton->getContentSize().width * 1.25f, m_pageLabel->getPositionY() - m_pageLabel->getContentSize().height); //  - rightMenu->getContentSize().height
+    rightMenu->setPosition(winSize.width - m_goToPageButton->getContentSize().width * 1.25f, winSize.height - 20); //  - rightMenu->getContentSize().height
     rightMenu->setLayout(SimpleAxisLayout::create(Axis::Column)->setGap(5.f));
     rightMenu->setAnchorPoint({ 0.f, 1.f });
     
