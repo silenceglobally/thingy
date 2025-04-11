@@ -220,10 +220,17 @@ void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
         if (top == "0") top = "NA";
 
         CCLabelBMFont* topLabel = CCLabelBMFont::create(top.c_str(), "bigFont.fnt");
-        topLabel->setOpacity(150);
-        topLabel->setPosition({26, 14});
+        if (std::stoi(top) > 150) topLabel->setColor(ccc3(180,180,180));
         topLabel->limitLabelWidth(25.f, 0.5f, 0.001f);
-
+        topLabel->setOpacity(150);
+        if (cell->m_level->m_coins >= 1) {
+            topLabel->setPosition({26, 8});
+            topLabel->setScale(0.35f);
+        } else {
+            topLabel->setPosition({26, 14});
+            topLabel->setScale(.5f);
+        }
+        
         //348 9    0.65f     112
         
         cell->addChild(topLabel);
