@@ -7,3 +7,4 @@ This mod includes a list of levels from the GDCP Challenge List. For more info a
 - Zilko - Developer
 - OmgRod - Developer
 - AgathX - Mod Idea
+- Cvolton - BetterInfo textures

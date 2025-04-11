@@ -1,6 +1,6 @@
-#include "Geode/cocos/cocoa/CCString.h"
-#include "Geode/ui/BasedButtonSprite.hpp"
+#include "Geode/cocos/textures/CCTexture2D.h"
 #include "Includes.hpp"
+#include "DoubleArrow.h"
 
 #include "GDCPListLayer.hpp"
 #include "Request.hpp"
@@ -148,27 +148,35 @@ bool GDCPListLayer::init() {
         this,
         menu_selector(GDCPListLayer::onGoToPage)
     );
-    m_goToPageButton->setID("go-to-page-button");
+    m_goToPageButton->setScale(0.75f);
+
+    auto lastPageButton = CCMenuItemSpriteExtra::create(
+        DoubleArrow::create(true, "GJ_arrow_03_001.png"),
+        this,
+        menu_selector(GDCPListLayer::onLastPage)
+    );
+
     
     float labelBottom = m_pageLabel->getPositionY() - m_pageLabel->getContentSize().height;
     float nextTop = m_nextButton->getPositionY() + m_nextButton->getContentSize().height;
     
     if (nextTop < labelBottom) std::swap(labelBottom, nextTop);
     
-    float menuHeight = nextTop - labelBottom;
-    CCPoint menuPosition = { winSize.width - m_goToPageButton->getContentSize().width * 1.25f, labelBottom };
+    float menuHeight = nextTop - labelBottom; // labelBottom + m_pageLabel->getContentSize().height
     
     auto rightMenu = CCMenu::create();
     rightMenu->setContentSize({ m_goToPageButton->getContentSize().width, menuHeight });
-    rightMenu->setPosition(menuPosition);
-    rightMenu->setLayout(SimpleAxisLayout::create(Axis::Column)->setGap(2.f));
-    rightMenu->setAnchorPoint({ 0.f, 0.f });
+    rightMenu->setPosition(winSize.width - m_goToPageButton->getContentSize().width * 1.25f, m_pageLabel->getPositionY() - m_pageLabel->getContentSize().height); //  - rightMenu->getContentSize().height
+    rightMenu->setLayout(SimpleAxisLayout::create(Axis::Column)->setGap(5.f));
+    rightMenu->setAnchorPoint({ 0.f, 1.f });
     
     rightMenu->addChild(m_goToPageButton);
+    rightMenu->addChild(lastPageButton);
     this->addChild(rightMenu);    
 
     rightMenu->updateLayout();
     updatePageLabel();
+    updateGoToPage();
 
     return true;
 }
@@ -247,6 +255,7 @@ void GDCPListLayer::onNext(CCObject*) {
 
     updateButtons();
     updatePageLabel();
+    updateGoToPage();
 }
 
 void GDCPListLayer::onPrev(CCObject*) {
@@ -260,6 +269,7 @@ void GDCPListLayer::onPrev(CCObject*) {
 
     updateButtons();
     updatePageLabel();
+    updateGoToPage();
 }
 
 void GDCPListLayer::updatePageLabel() {
@@ -341,11 +351,22 @@ void GDCPListLayer::setIDPopupClosed(SetIDPopup* popup, int id) {
     goToPage(m_currentPage);
     updateButtons();
     updatePageLabel();
-    
-    // Make sure m_goToPageButton is valid
+    updateGoToPage();
+}
+
+void GDCPListLayer::onLastPage(CCObject* sender) {
+    showLoading();
+    m_currentPage = getLastPage() - 1;
+    goToPage(m_currentPage);
+    updateButtons();
+    updatePageLabel();
+    updateGoToPage();
+}
+
+void GDCPListLayer::updateGoToPage() {
     if (m_goToPageButton) {
         if (auto label = m_goToPageButton->getChildByType<EditorButtonSprite*>(0)->getChildByType<CCLabelBMFont*>(0)) {
-            label->setString(std::to_string(id).c_str());
+            label->setString(std::to_string(m_currentPage + 1).c_str());
         } else {
             log::warn("No label of type CCLabelBMFont found in m_goToPageButton.");
         }

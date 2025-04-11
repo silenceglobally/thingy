@@ -1,3 +1,9 @@
+# v1.0.3
+
+- Added "Go To Page" button
+- Added "Last Page" button
+- Added level placements
+
 # v1.0.2
 
 - Add list mod badges

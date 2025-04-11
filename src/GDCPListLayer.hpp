@@ -63,6 +63,10 @@ private:
 
     virtual void GDCPListLayer::setIDPopupClosed(SetIDPopup* popup, int id);
 
+    void onLastPage(CCObject* sender);
+
+    void updateGoToPage();
+
 public:
 
     static GDCPListLayer* create();
