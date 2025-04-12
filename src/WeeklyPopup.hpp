@@ -43,13 +43,15 @@ private:
 
     bool setup();
 
+    void showLevel(GJGameLevel* level);
+
     void showLoading();
 
     void hideLoading();
 
     void hideError();
 
-    void showLevel(GJGameLevel* level);
+    void updateTime();
 
     void onDiscard(CCObject*);
 

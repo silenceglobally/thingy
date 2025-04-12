@@ -1,5 +1,6 @@
 #include "WeeklyPopup.hpp"
 
+#include "Utils.hpp"
 #include "Cache.hpp"
 #include "Request.hpp"
 
@@ -60,16 +61,10 @@ bool WeeklyPopup::setup() {
     m_cellContainer->addChild(spr, 3);
 
     m_loadingCircle = LoadingCircle::create();
-    m_loadingCircle->setPositionY(-8);
-    m_loadingCircle->setParentLayer(this);
+    m_loadingCircle->setPosition(-(CCDirector::sharedDirector()->getWinSize() - m_size) / 2 - ccp(0, 8));
+    m_loadingCircle->setParentLayer(m_mainLayer);
     m_loadingCircle->retain();
-
-    std::thread([this] {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        Loader::get()->queueInMainThread([this] {
-            m_loadingCircle->show();
-        });
-    }).detach();
+    m_loadingCircle->show();
 
     m_errorLabel = CCLabelBMFont::create("Something went wrong...", "goldFont.fnt");
     m_errorLabel->setScale(0.675f);
@@ -97,30 +92,6 @@ bool WeeklyPopup::setup() {
     showLoading();
 
     loadLevel();
-
-    time_t now = time(nullptr);
-    tm* tm_now = localtime(&now);
-
-    int days_until_sunday = (7 - tm_now->tm_wday) % 7;
-    if (days_until_sunday == 0)
-        days_until_sunday = 7;
-
-    tm target_tm = *tm_now;
-    target_tm.tm_hour = 0;
-    target_tm.tm_min = 0;
-    target_tm.tm_sec = 0;
-    target_tm.tm_mday += days_until_sunday;
-    mktime(&target_tm);
-
-    time_t target_time = mktime(&target_tm);
-    double diff_seconds = difftime(target_time, now);
-
-    int hours = diff_seconds / 3600;
-    int remaining = static_cast<int>(diff_seconds) % 3600;
-    int minutes = remaining / 60;
-    int seconds = remaining % 60;
-
-    log::debug("Time until next Sunday: {} hours, {} minutes, {} seconds.", hours, minutes, seconds);
 
     return true;
 }
@@ -157,11 +128,12 @@ void WeeklyPopup::showLevel(GJGameLevel* level) {
         btn->setSprite(spr);
     }
 
-    m_discardButton->setVisible(Cache::getCurrentWeekly() != Cache::getLocalWeekly());
-
     hideLoading();
     hideError();
 
+    log::debug("{} {}", Cache::getCurrentWeekly() ,Cache::getLocalWeekly());
+    
+    m_discardButton->setVisible(Cache::getCurrentWeekly() != Cache::getLocalWeekly());
     m_cellContainer->setVisible(true);
 }
 
@@ -193,6 +165,14 @@ void WeeklyPopup::loadLevelsFailed(char const*, int) {
     showError();
 }
 
+void WeeklyPopup::updateTime() {
+    if (!m_timeLabel) return;
+
+    m_timeLabel->setVisible(!m_isLoading && !m_isError);
+
+    m_timeLabel->setString(fmt::format("New Weekly Challenge in: {}", Utils::getRemainingTime()).c_str());
+}
+
 void WeeklyPopup::showError() {
     m_cellContainer->setVisible(false);
 
@@ -201,14 +181,14 @@ void WeeklyPopup::showError() {
 
     hideLoading();
 
-    m_timeLabel->setVisible(false);
+    updateTime();
     m_discardButton->setVisible(false);
 }
 
 void WeeklyPopup::hideError() {
     m_errorLabel->setVisible(false);
     m_isError = false;
-    m_timeLabel->setVisible(true);
+    updateTime();
 }
 
 void WeeklyPopup::showLoading() {
@@ -218,7 +198,7 @@ void WeeklyPopup::showLoading() {
 
     hideError();
 
-    m_timeLabel->setVisible(false);
+    updateTime();
     m_discardButton->setVisible(false);
 }
 
@@ -226,5 +206,5 @@ void WeeklyPopup::hideLoading() {
     m_loadingCircle->setVisible(false);
     m_isLoading = false;
 
-    m_timeLabel->setVisible(true);
+    updateTime();
 }

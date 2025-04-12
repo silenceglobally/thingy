@@ -126,11 +126,11 @@ public:
     }
 
     static void setLocalWeekly(int id) {
-        Mod::get()->setSavedValue<int>("local_weekly", id);
+        Mod::get()->setSavedValue("local_weekly", id);
     }
 
     static int getLocalWeekly() {
-        return Mod::get()->getSavedValue<int>("local_weekly");
+        return Mod::get()->getSavedValue<int64_t>("local_weekly");
     }
 
 };

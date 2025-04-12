@@ -220,6 +220,7 @@ void GDCPListLayer::onRefresh(CCObject*) {
     Cache::clearAllCache();
 
     Request::loadEditors(true);
+    Request::loadWeekly();
 
     goToPage(m_currentPage);
 

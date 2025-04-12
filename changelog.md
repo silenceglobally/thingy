@@ -1,3 +1,8 @@
+# v1.2.0
+
+- Added weekly challenge
+- Added clickable profiles for the staff team list
+
 # v1.1.0
 
 - Added "Go To Page" button
