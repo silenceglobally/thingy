@@ -130,8 +130,6 @@ void WeeklyPopup::showLevel(GJGameLevel* level) {
 
     hideLoading();
     hideError();
-
-    log::debug("{} {}", Cache::getCurrentWeekly() ,Cache::getLocalWeekly());
     
     m_discardButton->setVisible(Cache::getCurrentWeekly() != Cache::getLocalWeekly());
     m_cellContainer->setVisible(true);
