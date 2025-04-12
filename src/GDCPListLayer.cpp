@@ -3,11 +3,14 @@
 #include "DoubleArrow.h"
 
 #include "GDCPListLayer.hpp"
+#include "InfoPopup.hpp"
+#include "WeeklyPopup.hpp"
 #include "Request.hpp"
 #include "Cache.hpp"
 #include "Utils.hpp"
 
 GDCPListLayer::~GDCPListLayer() {
+    if (m_loadingCircle) m_loadingCircle->release();
     Cache::setLayer(nullptr);
 }
 
@@ -78,12 +81,12 @@ bool GDCPListLayer::init() {
     m_loadingCircle->retain();
     m_loadingCircle->show();
 
-    m_errorMessage = CCLabelBMFont::create("Unable to load page", "bigFont.fnt");
-    m_errorMessage->setPosition(winSize / 2);
-    m_errorMessage->setVisible(false);
-    m_errorMessage->setOpacity(125);
-    m_errorMessage->setScale(0.73f);
-    addChild(m_errorMessage, 2);
+    m_errorLabel = CCLabelBMFont::create("Unable to load page", "bigFont.fnt");
+    m_errorLabel->setPosition(winSize / 2);
+    m_errorLabel->setVisible(false);
+    m_errorLabel->setOpacity(125);
+    m_errorLabel->setScale(0.73f);
+    addChild(m_errorLabel, 2);
 
     spr = CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png");
     m_refreshButton = CCMenuItemSpriteExtra::create(spr,
@@ -122,8 +125,11 @@ bool GDCPListLayer::init() {
     
     std::string editors = Cache::getEditors();
 
-    m_infoButton = InfoAlertButton::create("Staff Team", editors, 1.0f);
+    spr = CCSprite::createWithSpriteFrameName("GJ_infoIcon_001.png");
+
+    m_infoButton = CCMenuItemSpriteExtra::create(spr, this, menu_selector(GDCPListLayer::onInfo));
     m_infoButton->setPosition({ 30.0f, 30.0f });
+    m_infoButton->setCascadeOpacityEnabled(true);
     menu->addChild(m_infoButton);
 
     m_pageLabel = CCLabelBMFont::create("", "goldFont.fnt");
@@ -163,6 +169,20 @@ bool GDCPListLayer::init() {
 
     menu->addChild(lastPageButton);
 
+    spr = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
+    spr->setScale(1.175f);
+
+    CCSprite* spr2 = CCSprite::createWithSpriteFrameName("gj_dailyCrown_001.png");
+    spr2->setScale(0.375f);
+    spr2->setPosition(spr->getContentSize() / 2);
+
+    spr->addChild(spr2);
+
+    CCMenuItemSpriteExtra* weeklyButton = CCMenuItemSpriteExtra::create(spr, this, menu_selector(GDCPListLayer::onWeekly));
+    weeklyButton->setPosition({36, winSize.height - 81});
+    
+    menu->addChild(weeklyButton);
+
     showLoading();
 
     goToPage(m_currentPage);
@@ -178,6 +198,14 @@ int GDCPListLayer::getLastPage() {
 
 void GDCPListLayer::onBack(CCObject*) {
     keyBackClicked();
+}
+
+void GDCPListLayer::onInfo(CCObject*) {
+    InfoPopup::create()->show();
+}
+
+void GDCPListLayer::onWeekly(CCObject*) {
+    WeeklyPopup::create()->show();
 }
 
 void GDCPListLayer::onRefresh(CCObject*) {
@@ -327,14 +355,12 @@ void GDCPListLayer::updateButtons() {
     m_refreshButton->setOpacity(!m_isLoading ? 255 : 200);
 
     std::string editors = Cache::getEditors();
-    m_infoButton->m_description = editors;
-
     m_infoButton->setEnabled(!editors.empty());
     m_infoButton->setOpacity(!editors.empty() ? 255 : 125);
 }
 
 void GDCPListLayer::showError() {
-    m_errorMessage->setVisible(true);
+    m_errorLabel->setVisible(true);
     m_isError = true;
 
     hideLoading();
@@ -342,7 +368,7 @@ void GDCPListLayer::showError() {
 }
 
 void GDCPListLayer::hideError() {
-    m_errorMessage->setVisible(false);
+    m_errorLabel->setVisible(false);
     m_isError = false;
 
     updateButtons();

@@ -15,11 +15,25 @@ enum Role {
     Other = 4
 };
 
+struct EditorEntry {
+    std::string name;
+    int accountID;
+    Role role;
+};
+
 const std::unordered_map<std::string, Role> roleMap = {
     {"owner", Role::Owner},
     {"dev", Role::Dev},
     {"admin", Role::Admin},
     {"helper", Role::Helper}
+};
+
+const std::unordered_map<Role, std::string> roleStrings = {
+    {Role::Owner, "Owner"},
+    {Role::Dev, "Developer"},
+    {Role::Admin, "Admin"},
+    {Role::Helper, "Helper"},
+    {Role::Other, "Other"}
 };
 
 const std::unordered_map<Role, std::string> roleColors = {
@@ -31,9 +45,3 @@ const std::unordered_map<Role, std::string> roleColors = {
 };
 
 // lamo
-
-struct EditorEntry {
-    std::string name;
-    Role role;
-    int accountID;
-};

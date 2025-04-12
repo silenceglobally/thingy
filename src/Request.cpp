@@ -3,6 +3,7 @@
 #include "Cache.hpp"
 #include "Request.hpp"
 #include "Utils.hpp"
+#include "WeeklyPopup.hpp"
 
 void Request::loadPage(int page) {
     if (Cache::getLevelNames().empty())
@@ -148,7 +149,7 @@ void Request::loadEditors(bool shouldUpdateButtons) {
         if (arr.isErr())
             return log::error("2. Failed to load editors: {}", arr.unwrapErr());
 
-        std::unordered_map<Role, std::vector<std::string>> names;
+        std::unordered_map<Role, std::vector<EditorEntry>> names;
         std::vector<EditorEntry> editorEntries;
 
         for (const matjson::Value& value : arr.unwrap()) {
@@ -162,19 +163,21 @@ void Request::loadEditors(bool shouldUpdateButtons) {
             if (roleMap.contains(roleStr))
                 role = roleMap.at(roleStr);
 
-            names[role].push_back(name);
-            editorEntries.push_back({ name, role, accountID });
+            EditorEntry editor = {name, accountID, role};
+
+            names[role].push_back(editor);
+            editorEntries.push_back(editor);
         }
 
         std::string editors;
 
         for (const auto& [role, roleNames] : names) {
             editors += fmt::format("<c{}>", roleColors.at(role));
-            for (const auto& name : roleNames) {
-                editors += name;
-                if (name != roleNames.back()) editors += "\n";
+            for (EditorEntry editor : roleNames) {
+                editors += fmt::format("{} ({}). [See profile](user:{})", editor.name, roleStrings.at(role), editor.accountID);
+                if (editor.name != roleNames.back().name) editors += "\n\n";
             }
-            editors += "</c>\n";
+            editors += "</c>\n\n";
         }
 
         Cache::setEditors(editors);
@@ -183,5 +186,33 @@ void Request::loadEditors(bool shouldUpdateButtons) {
         if (shouldUpdateButtons)
             if (GDCPListLayer* layer = Utils::getLayer())
                 layer->updateButtons();
+    });
+}
+
+void Request::loadWeekly(bool shouldUpdate) {
+    auto req = web::WebRequest();
+    req.header("Content-Type", "application/json");
+
+    req.get(fmt::format("{}{}", listLink, "_WEEKLY")).listen([shouldUpdate](web::WebResponse* e) {
+        auto res = e->string();
+
+        if (res.isErr())
+            return log::error("1. Failed to load weekly: {}", res.unwrapErr());
+
+        int id = geode::utils::numFromString<int>(res.unwrapOr("0")).unwrapOr(0);
+
+        if (id == 0)
+            return log::error("2. Failed to load weekly.");
+
+        Cache::setCurrentWeekly(id);
+
+        if (Cache::getLocalWeekly() == 0) Cache::setLocalWeekly(id);
+
+        if (shouldUpdate && id != 0) {
+            CCScene* scene = CCDirector::sharedDirector()->getRunningScene();
+            if (WeeklyPopup* popup = scene->getChildByType<WeeklyPopup>(0))
+                popup->loadLevel();
+        }
+
     });
 }

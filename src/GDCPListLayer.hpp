@@ -10,7 +10,7 @@ private:
 
     CustomListView* m_customListView = nullptr;
 
-    CCLabelBMFont* m_errorMessage = nullptr;
+    CCLabelBMFont* m_errorLabel = nullptr;
     CCLabelBMFont* m_pageLabel = nullptr;
     CCLabelBMFont* m_pageButtonLabel = nullptr;
 
@@ -19,8 +19,7 @@ private:
     CCMenuItemSpriteExtra* m_nextButton = nullptr;
     CCMenuItemSpriteExtra* m_prevButton = nullptr;
     CCMenuItemSpriteExtra* m_refreshButton = nullptr;
-
-    InfoAlertButton* m_infoButton = nullptr;
+    CCMenuItemSpriteExtra* m_infoButton = nullptr;
 
     int m_currentPage = 0;
     
@@ -42,9 +41,13 @@ private:
     void showPage(CCArray* levels);
 
     void onBack(CCObject*);
+    void onInfo(CCObject*);
     void onNext(CCObject*);
     void onPrev(CCObject*);
     void onRefresh(CCObject*);
+    void onGoToPage(CCObject*);
+    void onLastPage(CCObject*);
+    void onWeekly(CCObject*);
 
     void hideError();
 
@@ -58,9 +61,6 @@ private:
     virtual void loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) override;
     virtual void loadLevelsFailed(char const*, int) override;
     virtual void setIDPopupClosed(SetIDPopup* popup, int id) override;
-
-    void onGoToPage(CCObject*);
-    void onLastPage(CCObject*);
 
 public:
 

@@ -18,4 +18,6 @@ public:
     
     static void loadEditors(bool shouldUpdateButtons = false);
 
+    static void loadWeekly(bool shouldUpdate = false);
+
 };

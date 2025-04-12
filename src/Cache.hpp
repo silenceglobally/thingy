@@ -8,7 +8,9 @@ class Cache {
 
 private:
 
-GDCPListLayer* m_layer = nullptr;
+    GDCPListLayer* m_layer = nullptr;
+
+    GJGameLevel* m_cachedWeekly = nullptr;	
 
     std::vector<std::string> m_levelNames;
     std::vector<EditorEntry> m_editorsList;
@@ -19,6 +21,7 @@ GDCPListLayer* m_layer = nullptr;
     std::string m_editors;
     
     int m_tempCount = 0;
+    int m_currentWeekly = 0;
 
     static Cache& get() {
         static Cache instance;
@@ -34,6 +37,8 @@ public:
         c.m_cachedPages.clear();
         c.m_editors.clear();
         c.m_editorsList.clear();
+        c.m_currentWeekly = 0;
+        c.m_cachedWeekly = nullptr;
     }
 
     static const std::vector<std::string>& getLevelNames() {
@@ -103,4 +108,29 @@ public:
     static const std::vector<EditorEntry>& getEditorsList() {
         return get().m_editorsList;
     }    
+
+    static void setCurrentWeekly(int id) {
+        get().m_currentWeekly = id;
+    }
+
+    static int getCurrentWeekly() {
+        return get().m_currentWeekly;
+    }
+
+    static GJGameLevel* getCachedWeekly() {
+        return get().m_cachedWeekly;
+    }
+
+    static void setCachedWeekly(GJGameLevel* level) {
+        get().m_cachedWeekly = level;
+    }
+
+    static void setLocalWeekly(int id) {
+        Mod::get()->setSavedValue<int>("local_weekly", id);
+    }
+
+    static int getLocalWeekly() {
+        return Mod::get()->getSavedValue<int>("local_weekly");
+    }
+
 };

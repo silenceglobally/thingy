@@ -9,6 +9,7 @@
 $on_mod(Loaded) {
 	Request::loadEditors();
 	Request::loadLevelNames();
+	Request::loadWeekly();
 }
 
 class $modify(MyLevelSearchLayer, LevelSearchLayer) {
