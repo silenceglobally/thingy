@@ -1,4 +1,3 @@
-#include "Geode/cocos/textures/CCTexture2D.h"
 #include "Includes.hpp"
 #include "DoubleArrow.h"
 
@@ -14,8 +13,12 @@ GDCPListLayer::~GDCPListLayer() {
     Cache::setLayer(nullptr);
 }
 
+GDCPListLayer::GDCPListLayer(bool platformer) {
+    m_isPlatformer = platformer;
+}
+
 GDCPListLayer* GDCPListLayer::create(bool platformer) {
-    GDCPListLayer* ret = new GDCPListLayer();
+    GDCPListLayer* ret = new GDCPListLayer(platformer);
     if (ret->init(platformer)) {
         ret->autorelease();
         return ret;
@@ -277,55 +280,56 @@ void GDCPListLayer::goToPage(int page) {
 }
 
 void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
-    if (levels->count() == 0)
-        return showError();
+    if (levels && levels->count() > 0) {
+        m_customListView = CustomListView::create(levels, BoomListType::Level, 220.0, 356.0);
+        m_list->addChild(m_customListView);
 
-    m_customListView = CustomListView::create(levels, BoomListType::Level, 220.0, 356.0);
-    m_list->addChild(m_customListView);
+        for (LevelCell* cell : CCArrayExt<LevelCell*>(m_customListView->m_tableView->m_cellArray)) {
+            if (!typeinfo_cast<LevelCell*>(cell)) continue;
 
-    for (LevelCell* cell : CCArrayExt<LevelCell*>(m_customListView->m_tableView->m_cellArray)) {
-        if (!typeinfo_cast<LevelCell*>(cell)) continue;
+            int top = abs(Utils::getTopForLevelId(cell->m_level->m_levelID.value()));
+            std::string topStr = std::to_string(top);
 
-        int top = abs(Utils::getTopForLevelId(cell->m_level->m_levelID.value()));
-        std::string topStr = std::to_string(top);
+            if (top == 0) topStr = "NA";
 
-        if (top == 0) topStr = "NA";
+            int coins = cell->m_level->m_coins;
 
-        int coins = cell->m_level->m_coins;
+            CCLabelBMFont* topLabel = CCLabelBMFont::create(topStr.c_str(), top < 6 ? "goldFont.fnt" : "bigFont.fnt");
+            topLabel->setOpacity(150);
+            topLabel->setPosition({top < 6 ? 26.5f : 26.f, coins > 0 ? 9.f : 14.f});
+            topLabel->limitLabelWidth(25.f, coins > 0 ? (top < 6 ? 0.55f : 0.4f) : (top < 6 ? 0.65f : 0.5f), 0.001f);
 
-        CCLabelBMFont* topLabel = CCLabelBMFont::create(topStr.c_str(), top < 6 ? "goldFont.fnt" : "bigFont.fnt");
-        topLabel->setOpacity(150);
-        topLabel->setPosition({top < 6 ? 26.5f : 26.f, coins > 0 ? 9.f : 14.f});
-        topLabel->limitLabelWidth(25.f, coins > 0 ? (top < 6 ? 0.55f : 0.4f) : (top < 6 ? 0.65f : 0.5f), 0.001f);
+            if (top > 75) topLabel->setColor(ccc3(233, 233, 233));
+            else if (top > 150) topLabel->setColor(ccc3(188, 188, 188));
 
-        if (top > 75) topLabel->setColor(ccc3(233, 233, 233));
-        else if (top > 150) topLabel->setColor(ccc3(188, 188, 188));
+            if (CCNode* mainLayer = cell->getChildByID("main-layer")) {
+                mainLayer->addChild(topLabel);
 
-        if (CCNode* mainLayer = cell->getChildByID("main-layer")) {
-            mainLayer->addChild(topLabel);
+                if (coins < 1) continue;
 
-            if (coins < 1) continue;
-
-            if (CCNode* container = mainLayer->getChildByID("difficulty-container")) {
-                if (CCNode* coin1 = container->getChildByID("coin-icon-1")) {
-                    coin1->setScale(0.65f);
-                    coin1->setPosition(coin1->getPosition() + ccp(coins == 2 ? 1.5f : (coins == 3 ? 3.f : 0.f), 3));
-                }
-                if (CCNode* coin2 = container->getChildByID("coin-icon-2")) {
-                    coin2->setScale(0.65f);
-                    coin2->setPosition(coin2->getPosition() + ccp(coins == 2 ? -1.5f : 0.f, 3));
-                }
-                if (CCNode* coin3 = container->getChildByID("coin-icon-3")) {
-                    coin3->setScale(0.65f);
-                    coin3->setPosition(coin3->getPosition() + ccp(coins == 3 ? -3.f : 0.f, 3));
+                if (CCNode* container = mainLayer->getChildByID("difficulty-container")) {
+                    if (CCNode* coin1 = container->getChildByID("coin-icon-1")) {
+                        coin1->setScale(0.65f);
+                        coin1->setPosition(coin1->getPosition() + ccp(coins == 2 ? 1.5f : (coins == 3 ? 3.f : 0.f), 3));
+                    }
+                    if (CCNode* coin2 = container->getChildByID("coin-icon-2")) {
+                        coin2->setScale(0.65f);
+                        coin2->setPosition(coin2->getPosition() + ccp(coins == 2 ? -1.5f : 0.f, 3));
+                    }
+                    if (CCNode* coin3 = container->getChildByID("coin-icon-3")) {
+                        coin3->setScale(0.65f);
+                        coin3->setPosition(coin3->getPosition() + ccp(coins == 3 ? -3.f : 0.f, 3));
+                    }
                 }
             }
         }
-    }
 
-    hideLoading();
-    hideError();
-    updateButtons();
+        hideLoading();
+        hideError();
+        updateButtons();
+    } else {
+        return showError();
+    }
 }
 
 void GDCPListLayer::loadPage(const std::string& str) {

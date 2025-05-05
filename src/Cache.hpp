@@ -14,12 +14,10 @@ private:
 
     // Classic level-related
     std::vector<std::string> m_levelNames;
-    std::unordered_map<int, int> m_levelIds;
     std::unordered_map<int, CCArray*> m_cachedPages;
 
     // Platformer level-related
     std::vector<std::string> m_platLevelNames;
-    std::unordered_map<int, int> m_platLevelIds;
     std::unordered_map<int, CCArray*> m_cachedPlatPages;
 
     std::vector<EditorEntry> m_editorsList;
@@ -34,6 +32,8 @@ private:
     }
 
 public:
+    std::unordered_map<int, int> m_levelIds;
+    std::unordered_map<int, int> m_platLevelIds;
 
     static void clearAllCache() {
         Cache& c = get();

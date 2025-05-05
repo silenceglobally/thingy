@@ -6,6 +6,8 @@ class GDCPListLayer : public cocos2d::CCLayer, public LevelManagerDelegate, publ
 
 private:
 
+    GDCPListLayer(bool platformer);
+
     GJListLayer* m_list = nullptr;
 
     CustomListView* m_customListView = nullptr;
