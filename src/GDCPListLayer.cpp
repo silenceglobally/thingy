@@ -14,9 +14,9 @@ GDCPListLayer::~GDCPListLayer() {
     Cache::setLayer(nullptr);
 }
 
-GDCPListLayer* GDCPListLayer::create() {
+GDCPListLayer* GDCPListLayer::create(bool platformer) {
     GDCPListLayer* ret = new GDCPListLayer();
-    if (ret->init()) {
+    if (ret->init(platformer)) {
         ret->autorelease();
         return ret;
     }
@@ -30,7 +30,8 @@ void GDCPListLayer::keyBackClicked() {
     CCDirector::get()->popSceneWithTransition(0.5f, PopTransition::kPopTransitionFade);
 }
 
-bool GDCPListLayer::init() {
+bool GDCPListLayer::init(bool platformer) {
+    if (platformer) m_isPlatformer = true;
 
     Cache::setLayer(this);
 
@@ -182,6 +183,34 @@ bool GDCPListLayer::init() {
     weeklyButton->setPosition({36, winSize.height - 81});
     
     menu->addChild(weeklyButton);
+    
+    if (platformer) {
+        CCMenuItemSpriteExtra* classicButton = CCMenuItemSpriteExtra::create(
+            CircleButtonSprite::create(
+                CCSprite::createWithSpriteFrameName("GJ_starsIcon_001.png"),
+                CircleBaseColor::Green,
+                CircleBaseSize::Small
+            ),
+            this,
+            menu_selector(GDCPListLayer::onClassic)
+        );
+        classicButton->setPosition({36, winSize.height - 225});
+    
+        menu->addChild(classicButton);
+    } else {
+        CCMenuItemSpriteExtra* platformerButton = CCMenuItemSpriteExtra::create(
+            CircleButtonSprite::create(
+                CCSprite::createWithSpriteFrameName("GJ_moonsIcon_001.png"),
+                CircleBaseColor::Green,
+                CircleBaseSize::Small
+            ),
+            this,
+            menu_selector(GDCPListLayer::onPlatformer)
+        );
+        platformerButton->setPosition({36, winSize.height - 225});
+    
+        menu->addChild(platformerButton);
+    }
 
     showLoading();
 
@@ -193,7 +222,11 @@ bool GDCPListLayer::init() {
 }
 
 int GDCPListLayer::getLastPage() {
-    return (Cache::getLevelCount() + levelsPerPage) / levelsPerPage;
+    if (m_isPlatformer) {
+        return (Cache::getPlatLevelCount() + levelsPerPage) / levelsPerPage;
+    } else {
+        return (Cache::getLevelCount() + levelsPerPage) / levelsPerPage;
+    }
 }
 
 void GDCPListLayer::onBack(CCObject*) {
@@ -230,10 +263,17 @@ void GDCPListLayer::onRefresh(CCObject*) {
 }
 
 void GDCPListLayer::goToPage(int page) {
-    if (CCArray* cachedPage = Cache::getCachedPage(page))
-        showPage(cachedPage);
-    else
-        Request::loadPage(page);
+    if (m_isPlatformer) {
+        if (CCArray* cachedPage = Cache::getCachedPlatPage(page))
+            showPage(cachedPage);
+        else
+            Request::loadPage(page);
+    } else {
+        if (CCArray* cachedPage = Cache::getCachedPage(page))
+            showPage(cachedPage);
+        else
+            Request::loadPage(page);
+    }
 }
 
 void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
@@ -298,8 +338,13 @@ void GDCPListLayer::loadPage(const std::string& str) {
 }
 
 void GDCPListLayer::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) {
-    Cache::setCachedPage(m_currentPage, levels);
-    showPage(levels);
+    if (m_isPlatformer) {
+        Cache::setCachedPlatPage(m_currentPage, levels);
+        showPage(levels);
+    } else {
+        Cache::setCachedPage(m_currentPage, levels);
+        showPage(levels);
+    }
 }
 
 void GDCPListLayer::loadLevelsFailed(char const*, int) {
@@ -331,16 +376,29 @@ void GDCPListLayer::onPrev(CCObject*) {
 }
 
 void GDCPListLayer::updatePageLabels() {
-    int pageMax = m_currentPage * levelsPerPage + levelsPerPage;
-    m_pageLabel->setString(fmt::format(
-        "{} to {} of {}",
-        m_currentPage * levelsPerPage + 1,
-        pageMax > Cache::getLevelCount() ? Cache::getLevelCount() : pageMax,
-        Cache::getLevelCount()
-    ).c_str());
+    if (m_isPlatformer) {
+        int pageMax = m_currentPage * levelsPerPage + levelsPerPage;
+        m_pageLabel->setString(fmt::format(
+            "{} to {} of {}",
+            m_currentPage * levelsPerPage + 1,
+            pageMax > Cache::getPlatLevelCount() ? Cache::getPlatLevelCount() : pageMax,
+            Cache::getPlatLevelCount()
+        ).c_str());
 
-    m_pageButtonLabel->setString(std::to_string(m_currentPage + 1).c_str());
-    m_pageButtonLabel->limitLabelWidth(28.f, 0.8f, 0.001f);
+        m_pageButtonLabel->setString(std::to_string(m_currentPage + 1).c_str());
+        m_pageButtonLabel->limitLabelWidth(28.f, 0.8f, 0.001f);
+    } else {
+        int pageMax = m_currentPage * levelsPerPage + levelsPerPage;
+        m_pageLabel->setString(fmt::format(
+            "{} to {} of {}",
+            m_currentPage * levelsPerPage + 1,
+            pageMax > Cache::getLevelCount() ? Cache::getLevelCount() : pageMax,
+            Cache::getLevelCount()
+        ).c_str());
+
+        m_pageButtonLabel->setString(std::to_string(m_currentPage + 1).c_str());
+        m_pageButtonLabel->limitLabelWidth(28.f, 0.8f, 0.001f);
+    }
 }
 
 void GDCPListLayer::updateButtons() {
@@ -421,4 +479,24 @@ void GDCPListLayer::onLastPage(CCObject* sender) {
     
     updateButtons();
     updatePageLabels();
+}
+
+void GDCPListLayer::onPlatformer(CCObject* sender) {
+    auto layer = GDCPListLayer::create(true);
+	auto scene = CCScene::create();
+	scene->addChild(layer);
+
+	auto transition = CCTransitionFade::create(0.5f, scene);
+	
+	CCDirector::sharedDirector()->replaceScene(transition);
+}
+
+void GDCPListLayer::onClassic(CCObject* sender) {
+    auto layer = GDCPListLayer::create(false);
+	auto scene = CCScene::create();
+	scene->addChild(layer);
+
+	auto transition = CCTransitionFade::create(0.5f, scene);
+	
+	CCDirector::sharedDirector()->replaceScene(transition);
 }

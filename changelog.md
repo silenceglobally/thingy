@@ -1,3 +1,7 @@
+# v2.0.0
+
+- Added platformer list
+
 # v1.2.0
 
 - Added weekly challenge

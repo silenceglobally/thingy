@@ -26,6 +26,7 @@ private:
     bool m_isLoading = true;
     bool m_isError = false;
     bool m_didRefresh = false;
+    bool m_isPlatformer = false;
 
     CCLabelBMFont* m_pageCounter = nullptr;
 
@@ -33,7 +34,7 @@ private:
 
     ~GDCPListLayer();
 
-    bool init() override;
+    bool init(bool platformer);
 
     void keyBackClicked() override;
 
@@ -64,12 +65,16 @@ private:
 
 public:
 
-    static GDCPListLayer* create();
+    static GDCPListLayer* create(bool platformer);
 
     void loadPage(const std::string& str);
     
     void showError();
 
     void updateButtons();
+
+    void onPlatformer(CCObject*);
+
+    void onClassic(CCObject*);
 
 };

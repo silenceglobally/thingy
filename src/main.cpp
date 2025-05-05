@@ -9,6 +9,7 @@
 $on_mod(Loaded) {
 	Request::loadEditors();
 	Request::loadLevelNames();
+	Request::loadPlatLevelNames();
 	Request::loadWeekly();
 }
 
@@ -41,7 +42,7 @@ class $modify(MyLevelSearchLayer, LevelSearchLayer) {
 	}
 
 	void onMyButton(CCObject*) {
-		auto layer = GDCPListLayer::create();
+		auto layer = GDCPListLayer::create(false);
 		auto scene = CCScene::create();
 		scene->addChild(layer);
 
