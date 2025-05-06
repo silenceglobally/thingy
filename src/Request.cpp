@@ -5,6 +5,8 @@
 #include "Utils.hpp"
 #include "WeeklyPopup.hpp"
 
+using namespace geode::prelude;
+
 /// @brief Classic Levels
 
 void Request::loadPage(int page) {
@@ -118,19 +120,39 @@ void Request::loadPageLevels(int page) {
 
 std::string Request::getLevelsString(int page) {
     std::string str;
+    log::info("getLevelsString called. Page: {}", page);
+
+    // Log the size of the level names in Cache
+    log::info("Cache::getLevelNames() size: {}", Cache::getLevelNames().size());
+
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++) {
-        if (i >= Cache::getLevelNames().size()) continue;
+        log::info("Processing index: {}", i);
+        
+        // Check if the index is within the valid range
+        if (i >= Cache::getLevelNames().size()) {
+            log::warn("Index {} is out of range. Skipping.", i);
+            continue;
+        }
 
+        std::string name = Cache::getLevelNames()[i];
+        log::info("Level name at index {}: {}", i, name);
+
+        // Fetch the level ID
         int id = Cache::getLevelId(i);
+        log::info("Level ID at index {}: {}", i, id);
 
+        // Check if the ID is valid
         if (id == 0) {
-            log::error("3. Failed to load page levels: Failed to find level");
+            log::error("Failed to find level ID for index {}. ID is 0. Returning empty string.", i);
             return "";
         }
-        
+
+        // Add ID to the result string
         str += std::to_string(id) + (i == page * levelsPerPage + levelsPerPage - 1 ? "" : ",");
+        log::info("Current result string: {}", str);
     }
 
+    log::info("Returning final string: {}", str);
     return str;
 }
 
@@ -190,18 +212,18 @@ void Request::loadLevelNamesPlat(bool shouldLoadLevels, int page) {
 void Request::loadPageLevelsPlat(int page) {
     std::vector<std::string> names = Cache::getLevelNamesPlat();
 
-    Cache::setCountPlat(0);
+    Cache::setCount(0);
 
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++)
-        if (i >= names.size()) Cache::addCountPlat();
+        if (i >= names.size()) Cache::addCount();
     
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++) {
         if (i >= names.size()) continue;
 
         if (Cache::getLevelIdPlat(i) != 0) {
-            Cache::addCountPlat();
+            Cache::addCount();
 
-            if (Cache::getCountPlat() >= levelsPerPage)
+            if (Cache::getCount() >= levelsPerPage)
                 if (GDCPListLayer* layer = Utils::getLayer())
                     layer->loadPage(getLevelsStringPlat(page));
 
@@ -237,10 +259,10 @@ void Request::loadPageLevelsPlat(int page) {
                 }
             }
 
-            Cache::addCountPlat();
+            Cache::addCount();
             Cache::setLevelIdPlat(i, id);
 
-            if (Cache::getCountPlat() >= levelsPerPage && layer)
+            if (Cache::getCount() >= levelsPerPage && layer)
                 layer->loadPage(getLevelsStringPlat(page));
             
         });
@@ -249,19 +271,39 @@ void Request::loadPageLevelsPlat(int page) {
 
 std::string Request::getLevelsStringPlat(int page) {
     std::string str;
+    log::info("getLevelsStringPlat called. Page: {}", page);
+
+    // Log the size of the level names in Cache
+    log::info("Cache::getLevelNamesPlat() size: {}", Cache::getLevelNamesPlat().size());
+
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++) {
-        if (i >= Cache::getLevelNamesPlat().size()) continue;
+        log::info("Processing index: {}", i);
+        
+        // Check if the index is within the valid range
+        if (i >= Cache::getLevelNamesPlat().size()) {
+            log::warn("Index {} is out of range. Skipping.", i);
+            continue;
+        }
 
+        std::string name = Cache::getLevelNamesPlat()[i];
+        log::info("Level name at index {}: {}", i, name);
+
+        // Fetch the level ID
         int id = Cache::getLevelIdPlat(i);
+        log::info("Level ID at index {}: {}", i, id);
 
+        // Check if the ID is valid
         if (id == 0) {
-            log::error("3. Failed to load page levels: Failed to find level");
+            log::error("Failed to find level ID for index {}. ID is 0. Returning empty string.", i);
             return "";
         }
-        
+
+        // Add ID to the result string
         str += std::to_string(id) + (i == page * levelsPerPage + levelsPerPage - 1 ? "" : ",");
+        log::info("Current result string: {}", str);
     }
 
+    log::info("Returning final string: {}", str);
     return str;
 }
 

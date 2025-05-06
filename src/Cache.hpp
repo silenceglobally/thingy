@@ -24,7 +24,6 @@ private:
     std::string m_editors;
 
     int m_tempCount = 0;
-    int m_tempCountPlat = 0;
     int m_currentWeekly = 0;
 
     static Cache& get() {
@@ -134,18 +133,6 @@ public:
 
     static void setCount(int count) {
         get().m_tempCount = count;
-    }
-
-    static int getCountPlat() {
-        return get().m_tempCountPlat;
-    }
-
-    static void addCountPlat() {
-        get().m_tempCountPlat++;
-    }
-
-    static void setCountPlat(int count) {
-        get().m_tempCountPlat = count;
     }
 
     static void setLayer(GDCPListLayer* layer) {

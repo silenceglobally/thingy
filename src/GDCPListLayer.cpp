@@ -281,7 +281,7 @@ void GDCPListLayer::goToPage(int page) {
 
 void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
     auto levelsArray = typeinfo_cast<CCArray*>(levels);
-    if (levelsArray != nullptr && levelsArray->count() > 0) {
+    if (levelsArray && levelsArray->count() > 0) {
         m_customListView = CustomListView::create(levels, BoomListType::Level, 220.0, 356.0);
         m_list->addChild(m_customListView);
 
