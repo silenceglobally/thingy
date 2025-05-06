@@ -30,6 +30,13 @@ int Utils::getTopForLevelId(int id) {
     return 0;
 }
 
+int Utils::getTopForLevelIdPlat(int id) {
+    for (const auto& pair : Cache::getLevelIdsPlat())
+        if (pair.second == id) return pair.first + 1;
+
+    return 0;
+}
+
 std::string Utils::getRemainingTime() {
     time_t now = time(nullptr);
     tm* tm_now = localtime(&now);

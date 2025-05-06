@@ -17,13 +17,14 @@ private:
     std::unordered_map<int, CCArray*> m_cachedPages;
 
     // Platformer level-related
-    std::vector<std::string> m_platLevelNames;
-    std::unordered_map<int, CCArray*> m_cachedPlatPages;
+    std::vector<std::string> m_levelNamesPlat;
+    std::unordered_map<int, CCArray*> m_cachedPagesPlat;
 
     std::vector<EditorEntry> m_editorsList;
     std::string m_editors;
 
     int m_tempCount = 0;
+    int m_tempCountPlat = 0;
     int m_currentWeekly = 0;
 
     static Cache& get() {
@@ -33,7 +34,7 @@ private:
 
 public:
     std::unordered_map<int, int> m_levelIds;
-    std::unordered_map<int, int> m_platLevelIds;
+    std::unordered_map<int, int> m_levelIdsPlat;
 
     static void clearAllCache() {
         Cache& c = get();
@@ -43,9 +44,9 @@ public:
         c.m_cachedPages.clear();
 
         // Platformer
-        c.m_platLevelNames.clear();
-        c.m_platLevelIds.clear();
-        c.m_cachedPlatPages.clear();
+        c.m_levelNamesPlat.clear();
+        c.m_levelIdsPlat.clear();
+        c.m_cachedPagesPlat.clear();
 
         c.m_editors.clear();
         c.m_editorsList.clear();
@@ -89,36 +90,36 @@ public:
 
     // --- Platformer Level Functions ---
 
-    static const std::vector<std::string>& getPlatLevelNames() {
-        return get().m_platLevelNames;
+    static const std::vector<std::string>& getLevelNamesPlat() {
+        return get().m_levelNamesPlat;
     }
 
-    static int getPlatLevelCount() {
-        return get().m_platLevelNames.size();
+    static int getLevelCountPlat() {
+        return get().m_levelNamesPlat.size();
     }
 
-    static void setPlatLevelNames(const std::vector<std::string>& names) {
-        get().m_platLevelNames = names;
+    static void setLevelNamesPlat(const std::vector<std::string>& names) {
+        get().m_levelNamesPlat = names;
     }
 
-    static std::unordered_map<int, int> getPlatLevelIds() {
-        return get().m_platLevelIds;
+    static std::unordered_map<int, int> getLevelIdsPlat() {
+        return get().m_levelIdsPlat;
     }
 
-    static int getPlatLevelId(int index) {
-        return get().m_platLevelIds.contains(index) ? get().m_platLevelIds.at(index) : 0;
+    static int getLevelIdPlat(int index) {
+        return get().m_levelIdsPlat.contains(index) ? get().m_levelIdsPlat.at(index) : 0;
     }
 
-    static void setPlatLevelId(int index, int id) {
-        get().m_platLevelIds[index] = id;
+    static void setLevelIdPlat(int index, int id) {
+        get().m_levelIdsPlat[index] = id;
     }
 
-    static void setCachedPlatPage(int page, CCArray* levels) {
-        get().m_cachedPlatPages[page] = levels;
+    static void setCachedPagePlat(int page, CCArray* levels) {
+        get().m_cachedPagesPlat[page] = levels;
     }
 
-    static CCArray* getCachedPlatPage(int page) {
-        return get().m_cachedPlatPages.contains(page) ? get().m_cachedPlatPages.at(page) : nullptr;
+    static CCArray* getCachedPagePlat(int page) {
+        return get().m_cachedPagesPlat.contains(page) ? get().m_cachedPagesPlat.at(page) : nullptr;
     }
 
     // --- Shared / Editor Functions ---
@@ -133,6 +134,18 @@ public:
 
     static void setCount(int count) {
         get().m_tempCount = count;
+    }
+
+    static int getCountPlat() {
+        return get().m_tempCountPlat;
+    }
+
+    static void addCountPlat() {
+        get().m_tempCountPlat++;
+    }
+
+    static void setCountPlat(int count) {
+        get().m_tempCountPlat = count;
     }
 
     static void setLayer(GDCPListLayer* layer) {

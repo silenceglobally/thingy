@@ -8,6 +8,7 @@ public:
     static GDCPListLayer* getLayer();
 
     static int getTopForLevelId(int id);
+    static int getTopForLevelIdPlat(int id);
 
     static std::string getRemainingTime();
 };

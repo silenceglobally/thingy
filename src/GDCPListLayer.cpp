@@ -226,7 +226,7 @@ bool GDCPListLayer::init(bool platformer) {
 
 int GDCPListLayer::getLastPage() {
     if (m_isPlatformer) {
-        return (Cache::getPlatLevelCount() + levelsPerPage) / levelsPerPage;
+        return (Cache::getLevelCountPlat() + levelsPerPage) / levelsPerPage;
     } else {
         return (Cache::getLevelCount() + levelsPerPage) / levelsPerPage;
     }
@@ -267,10 +267,10 @@ void GDCPListLayer::onRefresh(CCObject*) {
 
 void GDCPListLayer::goToPage(int page) {
     if (m_isPlatformer) {
-        if (CCArray* cachedPage = Cache::getCachedPlatPage(page))
+        if (CCArray* cachedPage = Cache::getCachedPagePlat(page))
             showPage(cachedPage);
         else
-            Request::loadPage(page);
+            Request::loadPagePlat(page);
     } else {
         if (CCArray* cachedPage = Cache::getCachedPage(page))
             showPage(cachedPage);
@@ -280,14 +280,20 @@ void GDCPListLayer::goToPage(int page) {
 }
 
 void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
-    if (levels && levels->count() > 0) {
+    auto levelsArray = typeinfo_cast<CCArray*>(levels);
+    if (levelsArray != nullptr && levelsArray->count() > 0) {
         m_customListView = CustomListView::create(levels, BoomListType::Level, 220.0, 356.0);
         m_list->addChild(m_customListView);
 
         for (LevelCell* cell : CCArrayExt<LevelCell*>(m_customListView->m_tableView->m_cellArray)) {
             if (!typeinfo_cast<LevelCell*>(cell)) continue;
 
-            int top = abs(Utils::getTopForLevelId(cell->m_level->m_levelID.value()));
+            int top = 0;
+            if (m_isPlatformer) {
+                top = abs(Utils::getTopForLevelIdPlat(cell->m_level->m_levelID.value()));
+            } else {
+                top = abs(Utils::getTopForLevelId(cell->m_level->m_levelID.value()));
+            }
             std::string topStr = std::to_string(top);
 
             if (top == 0) topStr = "NA";
@@ -343,7 +349,7 @@ void GDCPListLayer::loadPage(const std::string& str) {
 
 void GDCPListLayer::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) {
     if (m_isPlatformer) {
-        Cache::setCachedPlatPage(m_currentPage, levels);
+        Cache::setCachedPagePlat(m_currentPage, levels);
         showPage(levels);
     } else {
         Cache::setCachedPage(m_currentPage, levels);
@@ -385,8 +391,8 @@ void GDCPListLayer::updatePageLabels() {
         m_pageLabel->setString(fmt::format(
             "{} to {} of {}",
             m_currentPage * levelsPerPage + 1,
-            pageMax > Cache::getPlatLevelCount() ? Cache::getPlatLevelCount() : pageMax,
-            Cache::getPlatLevelCount()
+            pageMax > Cache::getLevelCountPlat() ? Cache::getLevelCountPlat() : pageMax,
+            Cache::getLevelCountPlat()
         ).c_str());
 
         m_pageButtonLabel->setString(std::to_string(m_currentPage + 1).c_str());

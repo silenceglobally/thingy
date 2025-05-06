@@ -8,18 +8,18 @@ class Request {
 private:
 
     static std::string getLevelsString(int page);
-    static std::string getPlatLevelsString(int page);
+    static std::string getLevelsStringPlat(int page);
 
     static void loadPageLevels(int page);
-    static void loadPagePlatLevels(int page);
+    static void loadPageLevelsPlat(int page);
 
 public:
 
     static void loadLevelNames(bool shouldLoadLevels = false, int page = 0);
-    static void loadPlatLevelNames(bool shouldLoadLevels = false, int page = 0);
+    static void loadLevelNamesPlat(bool shouldLoadLevels = false, int page = 0);
 
     static void loadPage(int page);
-    static void loadPlatPage(int page);
+    static void loadPagePlat(int page);
 
     static void loadEditors(bool shouldUpdateButtons = false);
 

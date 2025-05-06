@@ -27,7 +27,7 @@ class $modify(ProfilePage) {
 
         if (isEditor(a2->m_accountID)) {
             auto yourBadge = CCSprite::create("modBadge.png"_spr);
-            yourBadge->setID("mycustombadge-badge");
+            yourBadge->setID("moderator-badge"_spr);
 
             username_menu->addChild(yourBadge);
             username_menu->updateLayout();
@@ -47,7 +47,7 @@ class $modify(CommentCell) {
 
         if (isEditor(p0->m_accountID)) {
             auto yourBadge = CCSprite::create("modBadge.png"_spr);
-            yourBadge->setID("mycustombadge-badge");
+            yourBadge->setID("moderator-badge"_spr);
 
             username_menu->addChild(yourBadge);
             username_menu->updateLayout();

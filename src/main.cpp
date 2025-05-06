@@ -9,7 +9,7 @@
 $on_mod(Loaded) {
 	Request::loadEditors();
 	Request::loadLevelNames();
-	Request::loadPlatLevelNames();
+	Request::loadLevelNamesPlat();
 	Request::loadWeekly();
 }
 

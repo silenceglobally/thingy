@@ -5,6 +5,8 @@
 #include "Utils.hpp"
 #include "WeeklyPopup.hpp"
 
+/// @brief Classic Levels
+
 void Request::loadPage(int page) {
     if (Cache::getLevelNames().empty())
         return loadLevelNames(true, page);
@@ -132,18 +134,22 @@ std::string Request::getLevelsString(int page) {
     return str;
 }
 
-void Request::loadPlatPage(int page) {
-    if (Cache::getPlatLevelNames().empty())
-        return loadPlatLevelNames(true, page);
+/// @brief Platformer Levels
 
-    loadPagePlatLevels(page);
+void Request::loadPagePlat(int page) {
+    if (Cache::getLevelNamesPlat().empty())
+        return loadLevelNamesPlat(true, page);
+
+    loadPageLevelsPlat(page);
 }
 
-void Request::loadPlatLevelNames(bool shouldLoadLevels, int page) {
-    if (!Cache::getPlatLevelNames().empty() && shouldLoadLevels)
-        return loadPagePlatLevels(page);
+void Request::loadLevelNamesPlat(bool shouldLoadLevels, int page) {
+
+    if (!Cache::getLevelNamesPlat().empty() && shouldLoadLevels)
+        return loadPageLevelsPlat(page);
 
     auto req = web::WebRequest();
+
     req.header("Content-Type", "application/json");
 
     req.get(fmt::format("{}{}.json", platListLink, "_list")).listen([shouldLoadLevels, page] (web::WebResponse* e) {
@@ -152,17 +158,20 @@ void Request::loadPlatLevelNames(bool shouldLoadLevels, int page) {
 
         if (res.isErr()) {
             if (layer) layer->showError();
-            return log::error("1. Failed to load platformer level names: {}", res.unwrapErr());
+            
+            return log::error("1. Failed to load level names: {}", res.unwrapErr());
         }
 
         auto json = res.unwrap().asArray();
 
         if (json.isErr()) {
             if (layer) layer->showError();
-            return log::error("2. Failed to load platformer level names: {}", json.unwrapErr());
+            
+            return log::error("2. Failed to load level names: {}", json.unwrapErr());
         }
 
         std::vector<std::string> names;
+        std::vector<std::string> realnames;
 
         for (auto& value : json.unwrap()) {
             std::string name = value.asString().unwrapOr("");
@@ -170,29 +179,31 @@ void Request::loadPlatLevelNames(bool shouldLoadLevels, int page) {
             names.push_back(name);
         }
 
-        Cache::setPlatLevelNames(names);
+        Cache::setLevelNamesPlat(names);
 
         if (shouldLoadLevels)
-            loadPagePlatLevels(page);
+            loadPageLevelsPlat(page);
+        
     });
 }
 
-void Request::loadPagePlatLevels(int page) {
-    std::vector<std::string> names = Cache::getPlatLevelNames();
-    Cache::setCount(0);
+void Request::loadPageLevelsPlat(int page) {
+    std::vector<std::string> names = Cache::getLevelNamesPlat();
+
+    Cache::setCountPlat(0);
 
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++)
-        if (i >= names.size()) Cache::addCount();
-
+        if (i >= names.size()) Cache::addCountPlat();
+    
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++) {
         if (i >= names.size()) continue;
 
-        if (Cache::getPlatLevelId(i) != 0) {
-            Cache::addCount();
+        if (Cache::getLevelIdPlat(i) != 0) {
+            Cache::addCountPlat();
 
-            if (Cache::getCount() >= levelsPerPage)
+            if (Cache::getCountPlat() >= levelsPerPage)
                 if (GDCPListLayer* layer = Utils::getLayer())
-                    layer->loadPage(getPlatLevelsString(page));
+                    layer->loadPage(getLevelsStringPlat(page));
 
             continue;
         }
@@ -201,6 +212,7 @@ void Request::loadPagePlatLevels(int page) {
         req.header("Content-Type", "application/json");
 
         std::string name = names[i];
+
         Utils::replace(name, ' ', "%20");
 
         req.get(fmt::format("{}{}.json", platListLink, name)).listen([i, page](web::WebResponse* e) {
@@ -209,43 +221,51 @@ void Request::loadPagePlatLevels(int page) {
 
             if (res.isErr()) {
                 if (layer) layer->showError();
-                return log::error("1. Failed to load platformer page levels: {}", res.unwrapErr());
+
+                return log::error("1. Failed to load page levels: {}", res.unwrapErr());
             }
 
             auto json = res.unwrap();
+
             int id = json["id"].asInt().unwrapOr(0);
 
             if (id == 0) {
                 if (layer) layer->showError();
-                return log::error("2. Failed to load platformer page levels: {}", res.unwrapErr());
+
+                if (res.isErr()) {
+                    return log::error("2. Failed to load page levels: {}", res.unwrapErr());
+                }
             }
 
-            Cache::addCount();
-            Cache::setPlatLevelId(i, id);
+            Cache::addCountPlat();
+            Cache::setLevelIdPlat(i, id);
 
-            if (Cache::getCount() >= levelsPerPage && layer)
-                layer->loadPage(getPlatLevelsString(page));
+            if (Cache::getCountPlat() >= levelsPerPage && layer)
+                layer->loadPage(getLevelsStringPlat(page));
+            
         });
     }
 }
 
-std::string Request::getPlatLevelsString(int page) {
+std::string Request::getLevelsStringPlat(int page) {
     std::string str;
     for (int i = page * levelsPerPage; i <= page * levelsPerPage + levelsPerPage - 1; i++) {
-        if (i >= Cache::getPlatLevelNames().size()) continue;
+        if (i >= Cache::getLevelNamesPlat().size()) continue;
 
-        int id = Cache::getPlatLevelId(i);
+        int id = Cache::getLevelIdPlat(i);
+
         if (id == 0) {
-            log::error("3. Failed to load platformer page levels: Failed to find level");
+            log::error("3. Failed to load page levels: Failed to find level");
             return "";
         }
-
+        
         str += std::to_string(id) + (i == page * levelsPerPage + levelsPerPage - 1 ? "" : ",");
     }
 
     return str;
 }
 
+/// @brief Loads editors
 
 void Request::loadEditors(bool shouldUpdateButtons) {
     if (!Cache::getEditors().empty()) return;
