@@ -6,10 +6,10 @@
 		"mac": "2.2074",
 		"ios": "2.2074"
 	},
-	"id": "gdcpteam.challenge-list",
+	"id": "silenceglobally.challenge-list",
 	"name": "GDCP List Integration",
 	"version": "v2.0.0",
-	"developers": ["GDCP Team", "OmgRod", "Zilko"],
+	"developers": ["silenceglobally", "OmgRod", "Zilko"],
 	"description": "Challenge list for GD Challenge Progression",
 	"links": {
 		"community": "https://discord.gg/knK2SvbSvq",
