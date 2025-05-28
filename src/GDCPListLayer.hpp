@@ -50,6 +50,7 @@ private:
     void onRefresh(CCObject*);
     void onGoToPage(CCObject*);
     void onLastPage(CCObject*);
+    void onFirstPage(CCObject*);
     void onWeekly(CCObject*);
 
     void hideError();

@@ -173,16 +173,23 @@ bool GDCPListLayer::init(bool platformer) {
 
     menu->addChild(lastPageButton);
 
-    spr = CCSprite::createWithSpriteFrameName("GJ_plainBtn_001.png");
-    spr->setScale(1.175f);
+    CCMenuItemSpriteExtra* firstPageButton = CCMenuItemSpriteExtra::create(
+        DoubleArrow::create(false, "GJ_arrow_03_001.png"),
+        this,
+        menu_selector(GDCPListLayer::onFirstPage)
+    );
+    firstPageButton->setPosition({21.f, winSize.height - 74});
 
-    CCSprite* spr2 = CCSprite::createWithSpriteFrameName("gj_dailyCrown_001.png");
-    spr2->setScale(0.375f);
-    spr2->setPosition(spr->getContentSize() / 2);
+    menu->addChild(firstPageButton);
 
-    spr->addChild(spr2);
+    auto buttonIcon = CircleButtonSprite::create(
+        CCSprite::createWithSpriteFrameName("gj_dailyCrown_001.png"),
+        CircleBaseColor::Green,
+        CircleBaseSize::Medium
+    );
+    buttonIcon->setScale(1.175f);
 
-    CCMenuItemSpriteExtra* weeklyButton = CCMenuItemSpriteExtra::create(spr, this, menu_selector(GDCPListLayer::onWeekly));
+    CCMenuItemSpriteExtra* weeklyButton = CCMenuItemSpriteExtra::create(buttonIcon, this, menu_selector(GDCPListLayer::onWeekly));
     weeklyButton->setPosition({36, winSize.height - 81});
     
     menu->addChild(weeklyButton);
@@ -485,6 +492,15 @@ void GDCPListLayer::setIDPopupClosed(SetIDPopup* popup, int id) {
 void GDCPListLayer::onLastPage(CCObject* sender) {
     showLoading();
     m_currentPage = getLastPage() - 1;
+    goToPage(m_currentPage);
+    
+    updateButtons();
+    updatePageLabels();
+}
+
+void GDCPListLayer::onFirstPage(CCObject* sender) {
+    showLoading();
+    m_currentPage = 0;
     goToPage(m_currentPage);
     
     updateButtons();

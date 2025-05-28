@@ -97,15 +97,25 @@ bool WeeklyPopup::setup() {
 }
 
 void WeeklyPopup::onDiscard(CCObject*) {
-    if (m_cell) m_cell->removeFromParentAndCleanup(true);
-    m_cell = nullptr;
+    geode::createQuickPopup(
+        "Skip level",
+        "There is a <cy>new</c> weekly challenge available. Skip the current level and load the next?",
+        "Cancel",
+        "Skip",
+        [&](auto, bool btn2) {
+            if (btn2) {
+                if (m_cell) m_cell->removeFromParentAndCleanup(true);
+                m_cell = nullptr;
 
-    showLoading();
+                showLoading();
 
-    Cache::setLocalWeekly(Cache::getCurrentWeekly());
-    Cache::setCachedWeekly(nullptr);
+                Cache::setLocalWeekly(Cache::getCurrentWeekly());
+                Cache::setCachedWeekly(nullptr);
 
-    loadLevel();
+                loadLevel();
+            }
+        }
+    );
 }
 
 void WeeklyPopup::showLevel(GJGameLevel* level) {
