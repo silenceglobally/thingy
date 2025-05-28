@@ -6,5 +6,7 @@ This mod includes a list of levels from the GDCP Challenge List. For more info a
 
 - Zilko - Developer
 - OmgRod - Developer
-- silenceglobally - Mod Idea, GitHub Debugger
+- silenceglobally - Developer, Mod Idea, GitHub Debugger
 - Cvolton - BetterInfo textures
+- Sadcraft0o - Former list owner
+- Natnatnjg - List owner
