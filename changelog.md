@@ -1,3 +1,7 @@
+# v2.1.0
+- Made levels 150 and up say "Legacy" in the list.
+- Updated internal things
+
 # v2.0.0
 
 - Added platformer list
