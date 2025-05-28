@@ -190,9 +190,11 @@ bool GDCPListLayer::init(bool platformer) {
     buttonIcon->setScale(1.175f);
 
     CCMenuItemSpriteExtra* weeklyButton = CCMenuItemSpriteExtra::create(buttonIcon, this, menu_selector(GDCPListLayer::onWeekly));
-    weeklyButton->setPosition({winSize.width - (weeklyButton->getContentWidth() / 2) - 10, (weeklyButton->getContentHeight() / 2) + 50});
+    weeklyButton->setPosition({winSize.width - (weeklyButton->getContentWidth() / 2) - 10, winSize.height - 225});
     
-    menu->addChild(weeklyButton);
+    if (!m_isPlatformer) {
+        menu->addChild(weeklyButton);
+    }
     
     if (platformer) {
         CCMenuItemSpriteExtra* classicButton = CCMenuItemSpriteExtra::create(
@@ -304,14 +306,20 @@ void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
             std::string topStr = std::to_string(top);
 
             if (top == 0) topStr = "NA";
-	    if (top > 150) topStr = "Legacy";
+	        if (top > 150) topStr = "Legacy";
 
             int coins = cell->m_level->m_coins;
 
             CCLabelBMFont* topLabel = CCLabelBMFont::create(topStr.c_str(), top < 6 ? "goldFont.fnt" : "bigFont.fnt");
             topLabel->setOpacity(150);
             topLabel->setPosition({top < 6 ? 26.5f : 26.f, coins > 0 ? 9.f : 14.f});
-            topLabel->limitLabelWidth(25.f, coins > 0 ? (top < 6 ? 0.55f : 0.4f) : (top < 6 ? 0.65f : 0.5f), 0.001f);
+            float scale = (topStr == "Legacy") ? 0.6f : (coins > 0 ? (top < 6 ? 0.55f : 0.4f) : (top < 6 ? 0.65f : 0.5f));
+            topLabel->limitLabelWidth(25.f, scale, 0.001f);
+            if (topStr == "Legacy") {
+                topLabel->setScale(0.35f);
+            } else {
+                topLabel->setScale(scale);
+            }
 
             if (top > 75) topLabel->setColor(ccc3(233, 233, 233));
             else if (top > 150) topLabel->setColor(ccc3(188, 188, 188));
