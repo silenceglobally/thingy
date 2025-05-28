@@ -297,6 +297,7 @@ void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
             std::string topStr = std::to_string(top);
 
             if (top == 0) topStr = "NA";
+	    if (top > 150) topStr = "Legacy";
 
             int coins = cell->m_level->m_coins;
 
