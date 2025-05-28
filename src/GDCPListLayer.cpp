@@ -190,7 +190,7 @@ bool GDCPListLayer::init(bool platformer) {
     buttonIcon->setScale(1.175f);
 
     CCMenuItemSpriteExtra* weeklyButton = CCMenuItemSpriteExtra::create(buttonIcon, this, menu_selector(GDCPListLayer::onWeekly));
-    weeklyButton->setPosition({36, winSize.height - 81});
+    weeklyButton->setPosition({winSize.width - (weeklyButton->getContentWidth() / 2) - 10, (weeklyButton->getContentHeight() / 2) + 50});
     
     menu->addChild(weeklyButton);
     
