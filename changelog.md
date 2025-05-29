@@ -1,14 +1,18 @@
 # v2.1.0
-- Levels 150 and up say "Legacy" in the list.
+- Levels 151 and up say "Legacy" in the list
+- Changed the location of the Weekly Challenge
+- Removed the Weekly Challenge from the Platformer List
+- Added a button to send you to the beginning of the list from any page
 - Updated internal things
+  
 
 # v2.0.0
 
-- Added platformer list
+- Added the GDCP Platformer List
 
 # v1.2.0
 
-- Added weekly challenge
+- Added a Weekly Challenge
 - Added clickable profiles for the staff team list
 
 # v1.1.0
