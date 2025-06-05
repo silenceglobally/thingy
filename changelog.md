@@ -10,18 +10,18 @@
 
 - Added the GDCP Platformer List
 
-# v1.2.0
+# v1.3.0
 
 - Added a Weekly Challenge
 - Added clickable profiles for the staff team list
 
-# v1.1.0
+# v1.2.0
 
 - Added "Go To Page" button
 - Added "Last Page" button
 - Added level placements
 
-# v1.0.2
+# v1.1.0
 
 - Add list mod badges
 - Refactored code
