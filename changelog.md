@@ -2,7 +2,7 @@
 - Levels 151 and up say "Legacy" in the list
 - Changed the location of the Weekly Challenge
 - Removed the Weekly Challenge from the Platformer List
-- Added a button to send you to the beginning of the list from any page
+- Added "first page" button
 - Updated internal things
   
 
