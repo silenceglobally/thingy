@@ -18,9 +18,11 @@
 	},
 	"tags": ["utility", "interface", "online"],
 	"resources": {
-		"sprites": [
-			"res/*.png"
-		]
+		"spritesheets": {
+			"gdcpSheet": [
+				"res/*.png"
+			]
+		}
 	},
 	"dependencies": {
 		"geode.node-ids": {

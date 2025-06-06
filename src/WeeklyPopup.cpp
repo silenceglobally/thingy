@@ -33,7 +33,7 @@ WeeklyPopup::~WeeklyPopup() {
 bool WeeklyPopup::setup() {
     geode::addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
-    CCSprite* spr = CCSprite::create("weeklyTitle.png"_spr);
+    CCSprite* spr = CCSprite::createWithSpriteFrameName("weeklyTitle.png"_spr);
     spr->setScale(0.85f);
     spr->setPosition(m_size / 2 + ccp(0, 110));
 

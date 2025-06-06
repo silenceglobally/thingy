@@ -20,7 +20,7 @@ class $modify(MyLevelSearchLayer, LevelSearchLayer) {
 		}
 
 		auto challengeSprite = CircleButtonSprite::create(
-			CCSprite::create("listDemon.png"_spr),
+			CCSprite::createWithSpriteFrameName("listDemon.png"_spr),
 			CircleBaseColor::Green,
 			CircleBaseSize::SmallAlt
 		);
