@@ -1,10 +1,11 @@
 # v2.1.0
+
+- Added new badges
 - Levels 151 and up say "Legacy" in the list
 - Changed the location of the Weekly Challenge
 - Removed the Weekly Challenge from the Platformer List
 - Added "first page" button
 - Updated internal things
-  
 
 # v2.0.0
 
