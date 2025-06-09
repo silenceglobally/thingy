@@ -312,13 +312,29 @@ void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
 
             CCLabelBMFont* topLabel = CCLabelBMFont::create(topStr.c_str(), top < 6 ? "goldFont.fnt" : "bigFont.fnt");
             topLabel->setOpacity(150);
-            topLabel->setPosition({top < 6 ? 26.5f : 26.f, coins > 0 ? 9.f : 14.f});
-            float scale = (topStr == "Legacy") ? 0.6f : (coins > 0 ? (top < 6 ? 0.55f : 0.4f) : (top < 6 ? 0.65f : 0.5f));
-            topLabel->limitLabelWidth(25.f, scale, 0.001f);
-            if (topStr == "Legacy") {
-                topLabel->setScale(0.35f);
+            if (auto diffContainer = cell->m_mainLayer->getChildByID("difficulty-container")) {
+                topLabel->setPosition({ diffContainer->getPositionX(), coins > 0 ? 1.f : 1.f });
             } else {
-                topLabel->setScale(scale);
+                log::debug("difficulty-container not found. :(");
+            }
+            if (Loader::get()->isModLoaded("cvolton.compact_lists")) {
+                float scale = (topStr == "Legacy") ? 0.5f : (top < 6 ? 0.45f : 0.32f);
+                topLabel->limitLabelWidth(25.f, scale, 0.001f);
+                topLabel->setAnchorPoint({ 0.5f, 0.f });
+                if (topStr == "Legacy") {
+                    topLabel->setScale(0.25f);
+                } else {
+                    topLabel->setScale(scale);
+                }
+            } else {
+                float scale = (topStr == "Legacy") ? 0.6f : (coins > 0 ? (top < 6 ? 0.55f : 0.4f) : (top < 6 ? 0.65f : 0.5f));
+                topLabel->limitLabelWidth(25.f, scale, 0.001f);
+                topLabel->setPositionY(coins > 0 ? 9.f : 14.f);
+                if (topStr == "Legacy") {
+                    topLabel->setScale(0.35f);
+                } else {
+                    topLabel->setScale(scale);
+                }
             }
 
             if (top > 75) topLabel->setColor(ccc3(233, 233, 233));
