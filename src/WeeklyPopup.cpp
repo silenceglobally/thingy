@@ -27,7 +27,11 @@ WeeklyPopup* WeeklyPopup::create() {
 }
 
 WeeklyPopup::~WeeklyPopup() {
-    if (m_loadingCircle) m_loadingCircle->release();
+    if (m_loadingCircle)
+        m_loadingCircle->release();
+
+    m_loadingCircle = nullptr;
+    GameLevelManager::sharedState()->m_levelManagerDelegate = nullptr;
 }
 
 bool WeeklyPopup::setup() {
@@ -158,6 +162,8 @@ void WeeklyPopup::loadLevel() {
 }
 
 void WeeklyPopup::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) {
+    if (!m_loadingCircle) return;
+    
     if (levels->count() < 1) {
         showError();
         return;
@@ -170,7 +176,8 @@ void WeeklyPopup::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int)
 }
 
 void WeeklyPopup::loadLevelsFailed(char const*, int) {
-    showError();
+    if (m_loadingCircle)
+        showError();
 }
 
 void WeeklyPopup::updateTime() {

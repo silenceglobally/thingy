@@ -317,7 +317,7 @@ void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
             } else {
                 log::debug("difficulty-container not found. :(");
             }
-            if (Loader::get()->isModLoaded("cvolton.compact_lists")) {
+            if (Loader::get()->isModLoaded("cvolton.compact_lists") && cell->getContentSize().height < 90) {
                 float scale = (topStr == "Legacy") ? 0.5f : (top < 6 ? 0.45f : 0.32f);
                 topLabel->limitLabelWidth(25.f, scale, 0.001f);
                 topLabel->setAnchorPoint({ 0.5f, 0.f });

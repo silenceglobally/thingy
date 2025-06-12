@@ -1,3 +1,8 @@
+# v2.1.2
+
+* Fixed two crashes with weekly popup
+* Fixed bug with the fix for the compact lists incompatibility .
+
 # v2.1.1
 
 - Fixed `Compact Lists` incompatibility
