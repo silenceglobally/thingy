@@ -4,7 +4,7 @@
 
 using namespace geode::prelude;
 
-const std::string listLink = "https://raw.githubusercontent.com/DeceptiveGD/Geometry-Dash-Challenge-Progression/refs/heads/main/data/";
+const std::string listLink = "https://raw.githubusercontent.com/Lila2048/all-unrated-extremes/refs/heads/main/data/";
 const std::string platListLink = "https://raw.githubusercontent.com/DeceptiveGD/GDCP-Platformer-List/refs/heads/main/data/";
 const int levelsPerPage = 10;
 
